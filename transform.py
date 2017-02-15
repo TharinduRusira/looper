@@ -13,18 +13,18 @@ from loopmap import *
 
 
 class Transform:
-    def tile(self):
+    def tile(self, loop):
         pass
 
-    def unroll(self):
+    def unroll(self,loop):
         pass
 
-    def permute(self):
+    def permute(self, loop_list):
         pass
 
-    def fuse(self):
+    def fuse(self, loop_list):
         pass
 
-    def distribute(self):
+    def distribute(self, loop):
         pass
 

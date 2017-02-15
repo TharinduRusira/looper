@@ -7,6 +7,7 @@ create a loop layer for each transform. This will link loops from the previous v
 
 from loopnest import LoopNest
 
+#A wrapper class for a LoopNest
 class Layer:
     def __init__(self,nest):
         if type(nest) is LoopNest:

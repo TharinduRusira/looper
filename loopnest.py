@@ -2,7 +2,7 @@
 Implements a single loop nest, which is referred to as a 'layer' in the context of a loop map
 '''
 class Loop:
-    def __init__(self,lo,high,interval):
+    def __init__(self,lo=None,high=None,interval=None):
         self.lo = lo;
         self.high = high
         self.interval = interval
@@ -14,7 +14,7 @@ class LoopNest:
 
     #append a new loop to the end of the list
     #in loop nest, this is the new innermost loop
-    def add_loop(self, lo,hi,interval):
+    def add_loop(self, lo=None,hi=None,interval=None):
         self.loop_list.append(Loop(lo,hi,interval))
         return self.loop_list
 
@@ -24,7 +24,7 @@ class LoopNest:
         return self.loop_list
 
     #add one loop after kth loop
-    def add_one_after(self, k, lo,hi,interval):
+    def add_one_after(self, k, lo=None,hi=None,interval=None):
         head = self.loop_list[:k]
         head.append(Loop(lo,hi,interval))
         self.loop_list = head + self.loop_list[k:]
