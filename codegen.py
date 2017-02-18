@@ -30,7 +30,7 @@ class CHiLLCodeGen(object):
 		print 'Initializing CHiLLCodeGen...'
 
 	def generate_chill_script(self, sourcename, procedurename, looplevel1, known = None, transformations = None, printcode = False):
-		script = "chill.script"
+		script = "xform.script"
 
 		fp = open(script,'w',0)
 
