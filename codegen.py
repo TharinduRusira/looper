@@ -40,7 +40,7 @@ class CHiLLCodeGen(object):
 
 		#Write mandatory fields of the script
 		fp.write(keyword['IMPORT']+'\n')
-		fp.write(keyword['SOURCE'] + '(\'' +sourcename +'\')\n')
+		fp.write(keyword['SOURCE'] + '(\'' +format(sourcename.split('/')[-1]) +'\')\n') #sourcename is the full path. extract dir and file names
 		fp.write(keyword['PROCEDURE']+ '(\'' +procedurename+'\')\n')
 		fp.write(keyword['LOOP'] + '(' + str(looplevel1) + ')\n')
 
@@ -175,7 +175,7 @@ class CHiLLCodeGen(object):
 					line += keyword['PARAN_R']
 					fp.write(line + '\n')
 
-				elif t[0] is 'tile':
+				elif t[0] == 'tile':
 					line += 'tile' + keyword['PARAN_L']
 					# t[1] = int stmt
 					line += str(t[1]) + keyword['DELIM']
@@ -207,40 +207,13 @@ class CHiLLCodeGen(object):
 					exit(-1)
 
 				i = i + 1
-			else:
-				print 'WARNING: No transformations specified...'
-				#fp.close()
-				#exit(0)
+		else:
+			print 'WARNING: No transformations specified...'
+			#fp.close()
+			#exit(0)
 
 		if printcode is True:
 			fp.write('print_code()')
 
 		print 'INFO: CHiLL script generated successfully...'
 		fp.close()
-
-# class CHiLLTune(MeasurementInterface):
-# 	"""
-# 	This is the interface class users should implement with the two mandatory functaions
-# 	1. manipulator(self)
-# 	2. run(self,desired_result,input,limit)
-# 	"""
-# 	__metaclass__ = ABCMeta
-#
-# 	def __init__(self):
-# 		print 'Initializing CHiLLTune...'
-# 		self.codegenerator = CHiLLCodeGen()
-#
-# 	@abstractmethod
-# 	def manipulator(self):
-# 		pass
-#
-# 	@abstractmethod
-# 	def run(self,desired_result,input,limit):
-# 		#super(MeasurementInterface,self).run(desired_result,input,limit)
-# 		pass
-#
-# 	def generate_chill_scrpit(self, sourcename, procedurename, format1, looplevel1, looplevel2=None, known = None, transformations=None, printcode = False):
-# 		#try:
-# 		self.codegenerator.generate_chill_script(sourcename, procedurename, format1, looplevel1, looplevel2, known, transformations, printcode)
-# 		#except Exception as e:
-# 		#	print 'ERROR: CHiLL script generation failed...'+ str(e)
