@@ -5,7 +5,8 @@
 4. Run transformed code
 5. Evaluate performance (time)
 '''
-
+import opentuner
+import argparse
 from opentuner import *
 from opentuner import MeasurementInterface
 from opentuner import Result
@@ -25,7 +26,7 @@ class Sequencer(MeasurementInterface):
         self.cfile = {'path':fn, 'name': '{}'.format(fn.split('/')[-1]) , 'procedure': p}
         self.cg = CHiLLCodeGen()
 
-    def config(self):
+    def manipulator(self):
 
         cm = ConfigurationManipulator()
         fdata = Scanner(self.cfile['name'])
@@ -45,7 +46,7 @@ class Sequencer(MeasurementInterface):
 
         if self.xform is 'tile':
             #TODO: build a valid transformation and generate corresponding CHiLL script
-            self.cg.generate_chill_script(self.cfile['name'], self.cfile['procedure'], looplevel1=0, transformations=['tile', 0, cfg['ll'], cfg['tile']] )
+            self.cg.generate_chill_script(self.cfile['name'], self.cfile['procedure'], looplevel1=0, transformations=['tile', 0, config['ll'], config['tile']] )
 
             #TODO: generate code, compile, run, measure time, repeat
 
@@ -59,10 +60,9 @@ class Sequencer(MeasurementInterface):
         start = time.clock()*1000
         run_result = self.call_program('./bin.tmp')
         elapsed = time.clock()*1000 - start
-
+        assert run_result['returncode'] == 0
         os.remove('xform.chill')
         os.remove('bin.tmp')
-
 
         return elapsed
 
@@ -72,5 +72,6 @@ class Sequencer(MeasurementInterface):
         return Result(time = ret_val)
 
     def save_final_config(self, config):
-        pass
+        self.manipulator().save_to_file(config.data, 'chill_final_config.json')
+
 
