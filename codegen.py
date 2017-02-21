@@ -26,11 +26,12 @@ keyword ={
 
 class CHiLLCodeGen(object):
 
-	def __init__(self):
+	def __init__(self,d):
 		print 'Initializing CHiLLCodeGen...'
+		self.dir = d
 
 	def generate_chill_script(self, sourcename, procedurename, looplevel1, known = None, transformations = None, printcode = False):
-		script = "xform.script"
+		script = self.dir+'xform.script'
 
 		fp = open(script,'w',0)
 
