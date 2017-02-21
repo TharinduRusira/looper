@@ -17,6 +17,7 @@ from transform import *
 from scanner import *
 import time
 import os
+import re
 
 argparser = argparse.ArgumentParser(parents=opentuner.argparsers())
 argparser.add_argument('xform', help = 'transformation')
@@ -28,7 +29,9 @@ class Sequencer(MeasurementInterface):
     def __init__(self, *pargs, **kwargs):
         super(Sequencer, self).__init__(*pargs, **kwargs)
         self.xform = args.xform
-        self.cfile = {'path': args.path, 'name': '{}'.format(args.path.split('/')[-1]), 'procedure': args.procedure}
+        fn = args.path.split('/')[-1]
+        dir = re.sub(fn, '', args.path)
+        self.cfile = {'path': args.path, 'name': fn, 'dir': dir, 'procedure': args.procedure}
         self.cg = CHiLLCodeGen()
 
     def manipulator(self):
@@ -58,7 +61,7 @@ class Sequencer(MeasurementInterface):
             #TODO: generate code, compile, run, measure time, repeat
 
 
-        RET = self.call_program('chill xform.script')
+        RET = self.call_program('chill '+ self.cfile['dir'] +'xform.script')
         if(RET['returncode']):
             return -1e-10 #bad configuration
         cmp_result = self.call_program('gcc -O3 rose_' + self.cfile['name'] +' -o bin.tmp')
