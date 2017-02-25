@@ -23,16 +23,19 @@ class Scanner:
         stmt_ready = False
         rbracks = 0
         lbracks = 0
-
+        inside = False
+        linenumber = 0
         while True:
             line = fp.readline()
-            print line
+            linenumber = linenumber + 1             #line number
             if line == '':                                  #EOF
                 break
+            elif line.strip() == '\n':            #empty line
+                continue
 
             if 'for' in line:
                 #extract the loop control logic
-                
+                inside = True
                 d = d + 1  # new loop level
                 stmt_ready = True
 
@@ -49,24 +52,24 @@ class Scanner:
                 continue
 
             if '{' in line:
-                if lbracks >=2 and d>0:                     #discounting 1 for the function's { and outermost loop's {
+                if inside and d>0:
+                    lbracks = lbracks + 1
                     stmt_ready = True
-                lbracks = lbracks + 1
                 continue
 
             if '}' in line:
-                rbracks = rbracks + 1
+                if inside:
+                    rbracks = rbracks + 1
                 if lbracks == rbracks:              #braces are balanced
                     stmt_ready = False
+                    inside = False                  #leaving the loop nest
                 else:
                     stmt_ready = True
+
                 continue
-            if (line.endswith(';') and stmt_ready): #any other line
-                #stms.append(line.strip())              we don't need actual statements
-                print 'heeyaa'
+            if (line.strip().endswith(';') and stmt_ready): #any other line
                 stms = stms + 1
                 stmt_ready = False
+                continue
 
-            print 'lbracks='+ str(lbracks) + '\trbracks='+str(rbracks)+'\n'
-
-        return {"depth":d, 'stms':stms, 'loops':loop_ids}
+        return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber}
