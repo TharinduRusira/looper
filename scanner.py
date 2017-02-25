@@ -19,6 +19,7 @@ class Scanner:
         d = 0                       #number of loops
         loop_ids = []
         stms = 0                    #number of stms
+        stmt_list = []
         limits= []
         stmt_ready = False
         rbracks = 0
@@ -67,9 +68,13 @@ class Scanner:
                     stmt_ready = True
 
                 continue
-            if (line.strip().endswith(';') and stmt_ready): #any other line
-                stms = stms + 1
-                stmt_ready = False
+            if line.strip().endswith(';'): #any other line
+                if stmt_ready:
+                    stms = stms + 1
+                    stmt_ready = False
+                    stmt_list.append([])
+                if stms > 0 and inside:
+                    (stmt_list[stms-1]).append(line.strip())
                 continue
 
-        return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber}
+        return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber, 'stms_list': stmt_list}
