@@ -8,6 +8,7 @@ scans the code and extract loop nest information
 
 '''
 import re
+from costmodel import *
 
 class Scanner:
     def __init__(self, file):
@@ -26,12 +27,17 @@ class Scanner:
         lbracks = 0
         inside = False
         linenumber = 0
+        mem = {}                #global accesses, cache/registry accesses, memory reuse info
+        arith = {}              #+, - , *, /, %,
+
         while True:
             line = fp.readline()
-            linenumber = linenumber + 1             #line number
+
             if line == '':                                  #EOF
                 break
-            elif line.strip() == '\n':            #empty line
+            linenumber = linenumber + 1  # line number
+
+            if line.strip() == '\n':            #empty line
                 continue
 
             if 'for' in line:
@@ -66,8 +72,8 @@ class Scanner:
                     inside = False                  #leaving the loop nest
                 else:
                     stmt_ready = True
-
                 continue
+
             if line.strip().endswith(';'): #any other line
                 if stmt_ready:
                     stms = stms + 1
@@ -75,6 +81,17 @@ class Scanner:
                     stmt_list.append([])
                 if stms > 0 and inside:
                     (stmt_list[stms-1]).append(line.strip())
+
+                    #extract computational and memory info
+                    add = line.count('+')
+                    sub = line.count('-')
+                    mul = line.count('*')
+                    div = line.count('/')
+                    mod = line.count('%')
+                    arith.update({'add':add, 'sub':sub, 'mul':mul, 'div':div, 'mod':mod})
+
                 continue
 
-        return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber, 'stms_list': stmt_list}
+        c = cost(mem= mem, arith=arith, tot_lines=linenumber)
+        return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber,
+                'stms_list': stmt_list, 'mem':c['memcost'], 'arith': c['arithcost']}
