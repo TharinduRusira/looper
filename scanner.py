@@ -9,6 +9,7 @@ scans the code and extract loop nest information
 '''
 import re
 from costmodel import *
+import math
 
 class Scanner:
     def __init__(self, file):
@@ -27,8 +28,16 @@ class Scanner:
         lbracks = 0
         inside = False
         linenumber = 0
+        num_itrs = []           #number of iterations for each loop level
+        symbols = {}            #hold #define values
+        vars = {}               #hold variable names
         mem = {}                #global accesses, cache/registry accesses, memory reuse info
         arith = {}              #+, - , *, /, %,
+        add = 0
+        sub = 0
+        mul = 0
+        div = 0
+        mod = 0
 
         while True:
             line = fp.readline()
@@ -39,6 +48,10 @@ class Scanner:
 
             if line.strip() == '\n':            #empty line
                 continue
+
+            if '#define' in line:                               #currently, symbols are only read via #define
+                l = line.split(' ')
+                symbols.update({l[1].strip(): int(l[1])})
 
             if 'for' in line:
                 #extract the loop control logic
@@ -54,8 +67,21 @@ class Scanner:
                 start = l1[0].split('=')[1]
                 l2 = re.split(r'<|>|<=|>=',l1[1])
                 end = l2[1]
+
+                if end.strip() in symbols:
+                    end = symbols[end.strip()]
+
                 limits.append((idx, start,end))
                                                             # TODO: extract loop bounds and infer if they are > 0
+                step = l1[2]
+                if '++' in step or '--' in step:
+                    step_size = 1
+                else:
+                    #i = i + x
+                    rhs = (step.split('=')[1]).strip()
+                    step_size = int(re.split(r'\+|-|\*|/',rhs)[-1])
+                num_itrs[d] = math.ceil((int(end) - int(start))/step_size)
+
                 continue
 
             if '{' in line:
@@ -83,14 +109,14 @@ class Scanner:
                     (stmt_list[stms-1]).append(line.strip())
 
                     #extract computational and memory info
-                    add = line.count('+')
-                    sub = line.count('-')
-                    mul = line.count('*')
-                    div = line.count('/')
-                    mod = line.count('%')
+                    add = add + line.count('+')
+                    sub = sub + line.count('-')
+                    mul = mul + line.count('*')
+                    div = div + line.count('/')
+                    mod = mod + line.count('%')
                     arith.update({'add':add, 'sub':sub, 'mul':mul, 'div':div, 'mod':mod})
-
                 continue
+
 
         c = cost(mem= mem, arith=arith, tot_lines=linenumber)
         return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber,
