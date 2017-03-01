@@ -51,7 +51,7 @@ class Scanner:
 
             if '#define' in line:                               #currently, symbols are only read via #define
                 l = line.split(' ')
-                symbols.update({l[1].strip(): int(l[1])})
+                symbols.update({l[1].strip(): int(l[2])})
 
             if 'for' in line:
                 #extract the loop control logic
@@ -80,7 +80,7 @@ class Scanner:
                     #i = i + x
                     rhs = (step.split('=')[1]).strip()
                     step_size = int(re.split(r'\+|-|\*|/',rhs)[-1])
-                num_itrs[d] = math.ceil((int(end) - int(start))/step_size)
+                num_itrs.append(math.ceil((int(end) - int(start))/step_size))
 
                 continue
 
