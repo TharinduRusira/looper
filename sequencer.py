@@ -31,7 +31,7 @@ class Sequencer:
 
         self.cfile = {'path': self.path, 'name': fn, 'dir': dir, 'procedure': self.procedure}
         self.fdata = Scanner(self.cfile['path']).scan_loop()
-        self.cg = CHiLLCodeGen()
+        self.cg = CHiLLCodeGen(dir)
 
     def generate_space(self):
         input_range = [1, 2, 3]  # log(input size)
@@ -43,7 +43,8 @@ class Sequencer:
 
 
     def run(self, itr):
-        csvout = open(self.xform + '_data.csv', 'a')
+
+        csvout = open(self.xform+'_data.csv','a')
         csvwriter = csv.writer(csvout, delimiter=',')
 
         if self.xform == 'tile':
@@ -66,16 +67,20 @@ class Sequencer:
 
                     start = time.clock()
                     p2 = subprocess.call('./tmp.bin')
-                    elapsed = time.clock()*1000 - start*1000        #in ms
+                    cost = time.clock()*1000 - start*1000        #in ms
                     if p2 != 0:          #verify success before committing results
                         print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
                         continue
-                    csvwriter.writerow([i[0], i[1], i[2], i[3], elapsed])
+                #fp = open(self.xform + '_data.txt', 'a')
+                #fp.write(str(i[0])+ ','+ str(i[1]) + ',' + str(i[2]) + ',' + str(i[3]) + ',' + str(self.fdata['arith']) + ',' + str(self.fdata['mem']) + ',' + str(cost)+'\n')
+                #fp.close()
+                csvwriter.writerow([i[0], i[1], i[2], i[3], str(self.fdata['arith']), str(self.fdata['mem']), cost])
 
-                    #clean
-                    os.remove()     #remove chill script
-                    os.remove('rose_'+self.cfile['name'])
-                    os.remove('tmp.bin')
+                #clean
+                #os.remove()     #remove chill script
+                #os.remove('rose_'+self.cfile['name'])
+                #os.remove('tmp.bin')
+                print 'success\n'
             csvout.close()
 
         elif self.xform == 'unroll':
@@ -102,10 +107,10 @@ class Sequencer:
                     if p2 != 0:          #verify success before committing results
                         print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
                         continue
-                    csvwriter.writerow([i[0], self.fdata['depth'], self.fdata['stms'],  i[1], i[2], i[3], elapsed])
+                    #fp.write([i[0], self.fdata['depth'], self.fdata['stms'],  i[1], i[2], i[3], elapsed])
 
                     #clean
-                    os.remove() #chill script
+                    #os.remove() #chill script
                     os.remove('rose_'+self.cfile['name'])
                     os.remove('tmp.bin')
 
@@ -120,6 +125,8 @@ class Sequencer:
         else:
             print 'error: unknown transform \''+self.xform+'\'\n'
             exit(-1)
+
+        #fp.close()
 
 
 
