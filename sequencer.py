@@ -49,23 +49,24 @@ class Sequencer:
         csvwriter = csv.writer(csvout, delimiter=',')
 
         if self.xform == 'tile':
-
+            csvwriter.writerow(['input', 'depth', 'stms', 'arithmetic', 'memory', 'tiled loop', 'tiled stmt', 'tile size', 'cost'])                    #headers
             for i in itr:
-                #TODO: generate chill script
-                self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=i[1],
-                                              transformations=[['tile', i[2], i[1], i[3]]])
-                #TODO: compile the transformead code
-                p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
+                self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=0,
+                                              transformations=[['tile', i[2], i[1], i[3]]])                             #generate CHiLL script
+
+                p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)                                       #transform code
                 p.communicate()         #wait for the returncode
                 #verify p.returncode, if 0, success. Else invalid, cost = -INF
-                print p
+
                 if p.returncode != 0 :
                     elapsed = -1000.0
                 else:
                     #compile run rose_*.c and get execution time
                     p1 = Popen(('gcc rose_'+self.cfile['name']+' -o tmp.bin').split(), stdout=PIPE, stderr=PIPE)
                     p1.communicate()
-                    assert  p1.returncode == 0
+                    if  p1.returncode != 0:
+                        print 'compiling transformed code failed with error code '+ str(p1.returncode) + '\n'
+                        continue
 
                     start = time.clock()
                     p2 = subprocess.call('./tmp.bin')
@@ -76,13 +77,13 @@ class Sequencer:
                 #fp = open(self.xform + '_data.txt', 'a')
                 #fp.write(str(i[0])+ ','+ str(i[1]) + ',' + str(i[2]) + ',' + str(i[3]) + ',' + str(self.fdata['arith']) + ',' + str(self.fdata['mem']) + ',' + str(cost)+'\n')
                 #fp.close()
-                csvwriter.writerow([i[0], i[1], i[2], i[3], str(self.fdata['arith']), str(self.fdata['mem']), elapsed])
+                    csvwriter.writerow([i[0],self.fdata['depth'] , self.fdata['stms'], str(self.fdata['arith']), str(self.fdata['mem']), i[1], i[2], i[3], elapsed])
 
                 #clean
-                #os.remove()     #remove chill script
+                #os.remove('xform.script')     #remove chill script
                 #os.remove('rose_'+self.cfile['name'])
                 #os.remove('tmp.bin')
-                print 'success\n'
+
             csvout.close()
 
         elif self.xform == 'unroll':
@@ -113,8 +114,8 @@ class Sequencer:
 
                     #clean
                     #os.remove() #chill script
-                    os.remove('rose_'+self.cfile['name'])
-                    os.remove('tmp.bin')
+                    #os.remove('rose_'+self.cfile['name'])
+                    #os.remove('tmp.bin')
 
         elif self.xform == 'peel':
             pass
