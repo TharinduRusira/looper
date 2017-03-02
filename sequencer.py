@@ -45,11 +45,19 @@ class Sequencer:
 
     def run(self, itr):
 
-        csvout = open('data_'+self.xform+'.csv','a')
+        csvout = open('data_'+self.xform+'.csv','a+')
         csvwriter = csv.writer(csvout, delimiter=',')
-
+        csvreader = csv.reader(csvout)
+        l = None
         if self.xform == 'tile':
-            csvwriter.writerow(['input', 'depth', 'stms', 'arithmetic', 'memory', 'tiled loop', 'tiled stmt', 'tile size', 'cost'])                    #headers
+
+            for line in csvreader:
+                l = line
+                break
+
+            if l is None:
+                csvwriter.writerow(['input', 'depth', 'stms', 'arithmetic', 'memory', 'tiled loop', 'tiled stmt', 'tile size',
+                         'cost'])  # headers
 
             for i in itr:
                 self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=0,
@@ -88,8 +96,12 @@ class Sequencer:
             csvout.close()
 
         elif self.xform == 'unroll':
-            csvwriter.writerow(['input', 'depth', 'stms', 'arithmetic', 'memory', 'unrolled loop', 'unrolled stmt', 'unroll size', 'cost'])                    #headers
-
+            for line in csvreader:
+                l = line
+                break
+            if l is None:
+                csvwriter.writerow(['input', 'depth', 'stms', 'arithmetic', 'memory', 'unrolled loop', 'unrolled stmt',
+                         'unroll size', 'cost'])  # headers
 
             for i in itr:
                 self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=0,
