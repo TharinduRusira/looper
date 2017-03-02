@@ -31,6 +31,7 @@ class Sequencer:
 
         self.cfile = {'path': self.path, 'name': fn, 'dir': dir, 'procedure': self.procedure}
         self.fdata = Scanner(self.cfile['path']).scan_loop()
+
         self.cg = CHiLLCodeGen(dir)
 
     def generate_space(self):
@@ -57,8 +58,9 @@ class Sequencer:
                 p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
                 p.communicate()         #wait for the returncode
                 #verify p.returncode, if 0, success. Else invalid, cost = -INF
+                print p
                 if p.returncode != 0 :
-                    cost = -1000.0
+                    elapsed = -1000.0
                 else:
                     #compile run rose_*.c and get execution time
                     p1 = Popen(('gcc rose_'+self.cfile['name']+' -o tmp.bin').split(), stdout=PIPE, stderr=PIPE)
@@ -67,14 +69,14 @@ class Sequencer:
 
                     start = time.clock()
                     p2 = subprocess.call('./tmp.bin')
-                    cost = time.clock()*1000 - start*1000        #in ms
+                    elapsed = time.clock()*1000 - start*1000        #in ms
                     if p2 != 0:          #verify success before committing results
                         print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
                         continue
                 #fp = open(self.xform + '_data.txt', 'a')
                 #fp.write(str(i[0])+ ','+ str(i[1]) + ',' + str(i[2]) + ',' + str(i[3]) + ',' + str(self.fdata['arith']) + ',' + str(self.fdata['mem']) + ',' + str(cost)+'\n')
                 #fp.close()
-                csvwriter.writerow([i[0], i[1], i[2], i[3], str(self.fdata['arith']), str(self.fdata['mem']), cost])
+                csvwriter.writerow([i[0], i[1], i[2], i[3], str(self.fdata['arith']), str(self.fdata['mem']), elapsed])
 
                 #clean
                 #os.remove()     #remove chill script

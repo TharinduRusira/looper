@@ -105,19 +105,18 @@ class Scanner:
                     stms = stms + 1
                     stmt_ready = False
                     stmt_list.append([])
-                if stms > 0 and inside:
+                if inside:
                     (stmt_list[stms-1]).append(line.strip())
-
                     #extract computational and memory info
                     add = add + line.count('+')
                     sub = sub + line.count('-')
                     mul = mul + line.count('*')
                     div = div + line.count('/')
                     mod = mod + line.count('%')
-                    arith.update({'add':add, 'sub':sub, 'mul':mul, 'div':div, 'mod':mod})
                 continue
 
-
+        arith = {'add': add, 'sub': sub, 'mul': mul, 'div': div, 'mod': mod}
+        print arith
         c = cost(mem= mem, arith=arith, tot_lines=linenumber)
         return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber,
                 'stms_list': stmt_list, 'mem':c['memcost'], 'arith': c['arithcost']}
