@@ -68,8 +68,13 @@ class Scanner:
                 l2 = re.split(r'<|>|<=|>=',l1[1])
                 end = l2[1]
 
-                if end.strip() in symbols:
+                if end.strip() in symbols:              #if terminate condition is a defined variable
                     end = symbols[end.strip()]
+                else:
+                    for symbol in symbols:              #more complicated end conditions such as N-1, ...
+                        if symbol in re.split(r'\+|-|\*', end):
+                            end = symbols[symbol]
+                            break
 
                 limits.append((idx, start,end))
                                                             # TODO: extract loop bounds and infer if they are > 0
@@ -115,8 +120,14 @@ class Scanner:
                     mod = mod + line.count('%')
                 continue
 
+        tot_itrs = 1
+        for limit in limits:                #limits = [(idx, start, end)]
+            tot_itrs *= (int(limit[2]) - int(limit[1]))       # end - start
+
+        print symbols
+        print limits
+        print 'iterations='+ str(tot_itrs)
         arith = {'add': add, 'sub': sub, 'mul': mul, 'div': div, 'mod': mod}
-        print arith
-        c = cost(mem= mem, arith=arith, tot_lines=linenumber)
+        c = cost(mem= mem, arith=arith, tot_lines=linenumber, tot_itrs=tot_itrs)
         return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber,
                 'stms_list': stmt_list, 'mem':c['memcost'], 'arith': c['arithcost']}
