@@ -3,7 +3,7 @@ defines a simple cost model to evaluate the nature of loop statements
 will consider arithmetic operations, memory accesses etc.
 '''
 
-def cost(mem, arith, tot_lines):
+def cost(mem, arith, tot_lines, tot_itrs):
     #return cost
     #mc = mem['memops']/tot_lines
     mc = 1
