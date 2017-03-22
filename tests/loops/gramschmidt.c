@@ -1,9 +1,9 @@
 #define N 1000
 #define M 1000
 
-float A[][];
-float R[][];
-float Q[][];
+float A[M][N];
+float R[N][N];
+float Q[M][N];
 
 float nrm;
 

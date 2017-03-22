@@ -1,6 +1,9 @@
 #define N 100
 #define T 100
 #define M 100
+
+int t, i,j;
+
 int main(){
 
 float A[N][N][N];

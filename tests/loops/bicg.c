@@ -1,11 +1,11 @@
 #define N 1000
 #define M 1000
 
-float A[][];
-float s[];
-float q[];
-float p[];
-float r[];
+float A[N][M];
+float s[M];
+float q[N];
+float p[M];
+float r[N];
 
 int i1, j1, i2;
 

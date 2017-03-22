@@ -12,7 +12,7 @@ void main(){
     for (j1 = 0; j1 < M; j1++){
         mean[j1] = 0.0;
         for (i1 = 0; i1 < N; i1++){
-            mean[j] += data[i][j];
+            mean[j1] += data[i1][j1];
          }
          mean[j1] = mean[j1]/(N*1.0);
      }

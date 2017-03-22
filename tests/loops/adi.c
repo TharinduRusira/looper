@@ -7,11 +7,11 @@ float p[N][N];
 float q[N][N];
 
 float DX, DY, DT;
-float B!, B2;
+float B1, B2;
 float mul1, mul2;
 float a,b,c,d,e,f;
 
-int i1, j1, i2, j2, j3, j4;
+int t, i1, j1, i2, j2, j3, j4;
 
 void main(){
 
