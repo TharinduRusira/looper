@@ -10,7 +10,8 @@ float r[N];
 int i1, j, i2;
 
 void main(){
-    for (i1 = 0; i1 < M; i1++){
+#pragma scop
+ 	for (i1 = 0; i1 < M; i1++){
         s[i1] = 0;
      }
     for (i2 = 0; i2 < N; i2++)
@@ -22,5 +23,6 @@ void main(){
 	        q[i2] = q[i2] + A[i2][j] * p[j];
 	    }
     }
+#pragma endscop
 
 }

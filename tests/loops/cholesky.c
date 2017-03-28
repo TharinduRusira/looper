@@ -6,7 +6,7 @@ float A[N][N];
 int i1, j, k1, k2;
 
 void main(){
-
+#pragma scop
     for (i1 = 0; i1 < N; i1++) {
      //j<i
         for (j = 0; j < i1; j++) {
@@ -23,5 +23,5 @@ void main(){
         A[i1][i1] = sqrt(A[i1][i1]);
   }
 
-
+#pragma endscop
 }

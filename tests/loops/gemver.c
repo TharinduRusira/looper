@@ -16,7 +16,8 @@ float z[N];
 int i1,j, i2,j2, i3,j3, i4,j4;
 
 void main(){
-    for(i1=0;i1<N;i1++){
+#pragma scop
+ 	for(i1=0;i1<N;i1++){
         for(j=0;j<N;j++){
                   A[i1][j] = A[i1][j] + u1[i1] * v1[j] + u2[i1] * v2[j];
         }
@@ -35,6 +36,6 @@ void main(){
             w[i4] = w[i4] +  alpha * A[i4][j4] * x[j4];
         }
     }
-
+#pragma endscop
 }
 

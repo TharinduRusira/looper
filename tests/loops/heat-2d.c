@@ -4,8 +4,8 @@
 
 int t, i,j;
 
-int main(){
-
+void main(){
+#pragma scop
 float A[N][N][N];
 
 for(t=1;t<T-1;t++){
@@ -15,5 +15,5 @@ for(t=1;t<T-1;t++){
         }
     }
 }
-return 0;
+#pragma endscop
 }

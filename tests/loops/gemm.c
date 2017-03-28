@@ -12,7 +12,7 @@ float C[I][J];
 int i1,j,k1;
 
 void main(){
-
+#pragma scop
     for(i1=0;i1<I; i1++){
         for(j=0;j<J; j++){
             C[i1][j] = C[i1][j]*beta;
@@ -21,4 +21,5 @@ void main(){
             }
         }
     }
+#pragma endscop
 }

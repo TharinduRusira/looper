@@ -5,7 +5,7 @@ float path[N][N];
 int i1, j, k1;
 
 void main(){
-
+#pragma scop
     for (k1 = 0; k1 < N; k1++)
     {
         for(i1 = 0; i1 < N; i1++){
@@ -14,4 +14,5 @@ void main(){
 	        }
 	    }
     }
+#pragma endscop
 }

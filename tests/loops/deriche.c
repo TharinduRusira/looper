@@ -29,7 +29,7 @@ void main(){
    b1 =  16.0 * alpha;
    b2 = 32.0 * alpha;
    c1 = c2 = 1;
-
+#pragma scop
    for (i1=0; i1< W; i1++) {
         ym1 = 0.0;
         ym2 = 0.0;
@@ -94,4 +94,5 @@ void main(){
             imgOut[i6][j6] = c2*(y1[i6][j6] + y2[i6][j6]);
         }
     }
+#pragma endscop
 }

@@ -1,10 +1,9 @@
-#define N 10
-
-int main(int argc, char * argv[])
+#define N 100
+int main()
 {
 
 int i,j;
-int A[N][N], B[N], C[N];
+static int A[N][N], B[N], C[N];
 
 for (i=0;i<N;i++)
 {

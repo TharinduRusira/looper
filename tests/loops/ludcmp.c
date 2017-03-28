@@ -10,7 +10,7 @@ float w;
 int i1,j,k1, j2,k2, i2, j3, i3, j4;
 
 void main(){
-
+#pragma scop
     for (i1 = 0; i1 < N; i1++) {
         for (j = 0; j <i1; j++) {
             w = A[i1][j];
@@ -42,5 +42,5 @@ void main(){
             w = w - A[i3][j4] * x[j4];
         x[i3] = w / A[i3][i3];
     }
-
+#pragma endscop
 }

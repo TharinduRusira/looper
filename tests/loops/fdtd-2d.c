@@ -10,7 +10,7 @@ float _fict_[TMAX];
 int t, i1, j, i2,j2, i3, j3, j4;
 
 void main(){
-
+#pragma scop
     for(t = 0; t < TMAX; t++)
     {
         for (j = 0; j < NY; j++){
@@ -34,5 +34,5 @@ void main(){
 	     }
     }
 
-
+#pragma endscop
 }

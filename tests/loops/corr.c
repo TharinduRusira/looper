@@ -9,7 +9,7 @@ float stddev[M];
 int i1,j,k1, i2,j2,k2, i3,j3,k3;
 
 void main(){
-
+#pragma scop
     for(j=0;j<M;j++){
         mean[j] = 0.0;
         for(i1=0;i1<N;i1++){
@@ -41,5 +41,5 @@ void main(){
 
     corr[M-1][M-1] = 1.0;
 
-
+#pragma endscop
 }

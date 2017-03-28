@@ -8,7 +8,7 @@ float mean[M];
 int i1,j,k1, i2,j2,k2, i3,j3,k3 ;
 
 void main(){
-
+#pragma scop
     for (j = 0; j < M; j++){
         mean[j] = 0.0;
         for (i1 = 0; i1 < N; i1++){
@@ -33,5 +33,5 @@ void main(){
             cov[j3][i3] = cov[i3][j3];
           }
      }
-
+#pragma endscop
 }

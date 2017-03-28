@@ -9,6 +9,7 @@ float tmp[M];
 int i1, j, i2,j2;
 
 void main(){
+#pragma scop
     for (i1 = 0; i1 < N; i1++){
         y[i1] = 0;
     }
@@ -23,4 +24,5 @@ void main(){
 	        }
 	     }
     }
+#pragma endscop
 }

@@ -8,7 +8,7 @@ float table[N][N];
 int i1, j, k1;
 
 void main(){
-
+#pragma scop
     for (i1 = N-1; i1 >= 0; i1--) {
         for (j=i1+1; j<N; j++) {
             if (j-1>=0)
@@ -29,5 +29,5 @@ void main(){
             }
         }
     }
-
+#pragma endscop
 }

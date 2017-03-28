@@ -10,6 +10,7 @@ float B[M][N];
 int i1,j,k1    ;
 
 void main(){
+#pragma scop
     for (i1 = 0; i1 < M; i1++){
         for (j = 0; j < N; j++) {
             for (k1 = i1+1; k1 < M; k1++){
@@ -18,4 +19,5 @@ void main(){
             B[i1][j] = alpha * B[i1][j];
         }
     }
+#pragma endscop
 }

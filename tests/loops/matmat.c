@@ -1,8 +1,7 @@
-#define N 10
-
-int main(int argc, char * argv[])
+#define N 1000
+void main()
 {
-
+#pragma scop
 int i,j,k;
 int A[N][N], B[N][N], C[N][N];
 
@@ -19,6 +18,5 @@ for (i=0;i<N;i++)
     }
 }
 
-return 0;
-
+#pragma endscop
 }

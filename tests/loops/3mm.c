@@ -16,7 +16,8 @@ float G[NI][NL];
 int i1, j, k1, i2,j2, k2, i3,j3,k3;
 
 void main(){
-    /* E := A*B */
+#pragma scop
+	/* E := A*B */
     for (i1 = 0; i1 < NI; i1++){
         for (j = 0; j < NJ; j++)
         {
@@ -46,4 +47,5 @@ void main(){
 	        }
         }
     }
+#pragma endscop
 }

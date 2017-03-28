@@ -11,7 +11,7 @@ float sum;
 int i1,k1, i2, i3;
 
 void main(){
-
+#pragma scop
     y[0] = -1.0*r[0];
     beta = 1.0;
     alpha = -1.0 * r[0];
@@ -34,5 +34,5 @@ void main(){
     }
 
 
-
+#pragma endscop
 }

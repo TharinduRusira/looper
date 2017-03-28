@@ -12,7 +12,8 @@ float y[N];
 int i1,j;
 
 void main(){
-    for(i1=0;i1<N;i1++){
+#pragma scop
+ 	for(i1=0;i1<N;i1++){
         tmp[i1] = 0.0;
         y[i1] = 0.0;
         for(j=0; j< N; j++){
@@ -22,5 +23,5 @@ void main(){
         y[i1] = alpha*tmp[i1] + beta*y[i1];
     }
 
-
+#pragma endscop
 }

@@ -7,7 +7,7 @@ float B[N];
 int t, i1,i2;
 
 void main(){
-
+#pragma scop
     for (t = 0; t < TSTEPS; t++)
     {
         for (i1 = 1; i1 < N - 1; i1++){
@@ -18,5 +18,5 @@ void main(){
 	    }
     }
 
-
+#pragma endscop
 }

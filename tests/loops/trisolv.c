@@ -7,7 +7,7 @@ float b[N];
 int i1,j;
 
 void main(){
-
+#pragma scop
     for (i1 = 0; i1 < N; i1++)
     {
         x[i1] = b[i1];
@@ -16,4 +16,5 @@ void main(){
         }
         x[i1] = x[i1] / L[i1][i1];
     }
+#pragma endscop
 }

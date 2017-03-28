@@ -9,7 +9,8 @@ float A[N][N];
 int i1,j,i2,j2;
 
 void main(){
-    for (i1 = 0; i1 < N; i1++){
+#pragma scop
+ 	for (i1 = 0; i1 < N; i1++){
         for (j = 0; j < N; j++){
             x1[i1] = x1[i1] + A[i1][j] * y_1[j];
         }
@@ -19,4 +20,5 @@ void main(){
             x2[i2] = x2[i2] + A[j2][i2] * y_2[j2];
         }
     }
+#pragma endscop
 }

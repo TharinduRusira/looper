@@ -29,7 +29,7 @@ void main(){
     d = -1.0*mul2 / 2.0;
     e = 1.0 + mul2;
     f = d;
-
+#pragma scop
     for (t=1; t<=TSTEPS; t++) {
     //Column Sweep
         for (i1=1; i1<N-1; i1++) {
@@ -61,4 +61,5 @@ void main(){
             }
         }
     }
+#pragma endscop
 }

@@ -10,7 +10,7 @@ float nrm;
 int i1, j, k1, i2, i3, i4;
 
 void main(){
-
+#pragma scop
     for (k1 = 0; k1 < N; k1++)
     {
         nrm = 0.0;
@@ -34,5 +34,5 @@ void main(){
 	    }
     }
 
-
+#pragma endscop
 }

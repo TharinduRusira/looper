@@ -9,7 +9,8 @@ float sum[np];
 int r1, q1, p1,s1, p2;
 
 void main(){
-    for (r1 = 0; r1 < nr; r1++){
+#pragma scop
+ 	for (r1 = 0; r1 < nr; r1++){
         for (q1 = 0; q1 < nq; q1++)  {
             for (p1 = 0; p1 < np; p1++)  {
 	            sum[p1] = 0.0;
@@ -22,5 +23,6 @@ void main(){
 	        }
         }
     }
+#pragma endscop
 
 }
