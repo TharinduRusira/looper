@@ -13,16 +13,16 @@ float D[NM][NL];
 float G[NI][NL];
 
 
-int i1, j1, k1, i2,j2, k2, i3,j3,k3;
+int i1, j, k1, i2,j2, k2, i3,j3,k3;
 
 void main(){
     /* E := A*B */
     for (i1 = 0; i1 < NI; i1++){
-        for (j1 = 0; j1 < NJ; j1++)
+        for (j = 0; j < NJ; j++)
         {
-	        E[i1][j1] = 0.0;
+	        E[i1][j] = 0.0;
 	        for (k1 = 0; k1 < NK; ++k1){
-	            E[i1][j1] = E[i1][j1] + A[i1][k1] * B[k1][j1];
+	            E[i1][j] = E[i1][j] + A[i1][k1] * B[k1][j];
 	        }
         }
     }

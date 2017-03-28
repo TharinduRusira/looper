@@ -11,7 +11,7 @@ float B1, B2;
 float mul1, mul2;
 float a,b,c,d,e,f;
 
-int t, i1, j1, i2, j2, j3, j4;
+int t, i1, j, i2, j2, j3, j4;
 
 void main(){
 
@@ -36,9 +36,9 @@ void main(){
             v[0][i1] = 1.0;
             p[i1][0] = 0.0;
             q[i1][0] = v[0][i1];
-            for (j1=1; j1<N-1; j1++) {
-                p[i1][j1] = -c / (a*p[i1][j1-1]+b);
-                q[i1][j1] = (-d*u[j1][i1-1]+(1.0+ 2.0*d)*u[j1][i1] - f*u[j1][i1+1]-a*q[i1][j1-1])/(a*p[i1][j1-1]+b);
+            for (j=1; j<N-1; j++) {
+                p[i1][j] = -c / (a*p[i1][j-1]+b);
+                q[i1][j] = (-d*u[j][i1-1]+(1.0+ 2.0*d)*u[j][i1] - f*u[j][i1+1]-a*q[i1][j-1])/(a*p[i1][j-1]+b);
             }
 
             v[N-1][i1] = 1.0;

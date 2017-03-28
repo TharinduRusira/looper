@@ -7,14 +7,14 @@ float ey[NX][NY];
 float hz[NX][NY];
 float _fict_[TMAX];
 
-int t, i1, j1, i2,j2, i3, j3, j4;
+int t, i1, j, i2,j2, i3, j3, j4;
 
 void main(){
 
     for(t = 0; t < TMAX; t++)
     {
-        for (j1 = 0; j1 < NY; j1++){
-	        ey[0][j1] = _fict_[t];
+        for (j = 0; j < NY; j++){
+	        ey[0][j] = _fict_[t];
 	     }
 
         for (i1 = 1; i1 < NX; i1++){

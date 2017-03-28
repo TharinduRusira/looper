@@ -17,7 +17,7 @@ float k;
 
 float a1, a2, a3, a4, a5, a6,a7, a8, b1,b2, c1, c2;
 
-int i1,j1, i2,j2, i3,j3, i4,j4, i5,j5, i6,j6;
+int i1,j, i2,j2, i3,j3, i4,j4, i5,j5, i6,j6;
 
 void main(){
 
@@ -34,11 +34,11 @@ void main(){
         ym1 = 0.0;
         ym2 = 0.0;
         xm1 = 0.0;
-        for (j1=0; j1<H; j1++) {
-            y1[i1][j1] = a1*imgIn[i1][j1] + a2*xm1 + b1*ym1 + b2*ym2;
-            xm1 = imgIn[i1][j1];
+        for (j=0; j<H; j++) {
+            y1[i1][j] = a1*imgIn[i1][j] + a2*xm1 + b1*ym1 + b2*ym2;
+            xm1 = imgIn[i1][j];
             ym2 = ym1;
-            ym1 = y1[i1][j1];
+            ym1 = y1[i1][j];
         }
     }
 

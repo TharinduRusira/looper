@@ -13,12 +13,12 @@ float x[N];
 float y[N];
 float z[N];
 
-int i1,j1, i2,j2, i3,j3, i4,j4;
+int i1,j, i2,j2, i3,j3, i4,j4;
 
 void main(){
     for(i1=0;i1<N;i1++){
-        for(j1=0;j1<N;j1++){
-                  A[i1][j1] = A[i1][j1] + u1[i1] * v1[j1] + u2[i1] * v2[j1];
+        for(j=0;j<N;j++){
+                  A[i1][j] = A[i1][j] + u1[i1] * v1[j] + u2[i1] * v2[j];
         }
     }
     for (i2 = 0; i2 < N; i2++){

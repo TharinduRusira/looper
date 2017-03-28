@@ -7,7 +7,7 @@ float q[N];
 float p[M];
 float r[N];
 
-int i1, j1, i2;
+int i1, j, i2;
 
 void main(){
     for (i1 = 0; i1 < M; i1++){
@@ -16,10 +16,10 @@ void main(){
     for (i2 = 0; i2 < N; i2++)
     {
         q[i2] = 0.0;
-        for (j1 = 0; j1 < M; j1++)
+        for (j = 0; j < M; j++)
 	    {
-	        s[j1] = s[j1] + r[i2] * A[i2][j1];
-	        q[i2] = q[i2] + A[i2][j1] * p[j1];
+	        s[j] = s[j] + r[i2] * A[i2][j];
+	        q[i2] = q[i2] + A[i2][j] * p[j];
 	    }
     }
 

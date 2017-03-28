@@ -6,12 +6,12 @@ float y_1[N];
 float y_2[N];
 float A[N][N];
 
-int i1,j1,i2,j2;
+int i1,j,i2,j2;
 
 void main(){
     for (i1 = 0; i1 < N; i1++){
-        for (j1 = 0; j1 < N; j1++){
-            x1[i1] = x1[i1] + A[i1][j1] * y_1[j1];
+        for (j = 0; j < N; j++){
+            x1[i1] = x1[i1] + A[i1][j] * y_1[j];
         }
     }
     for (i2 = 0; i2 < N; i2++){

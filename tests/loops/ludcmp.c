@@ -7,17 +7,17 @@ float y[N];
 
 float w;
 
-int i1,j1,k1, j2,k2, i2, j3, i3, j4;
+int i1,j,k1, j2,k2, i2, j3, i3, j4;
 
 void main(){
 
     for (i1 = 0; i1 < N; i1++) {
-        for (j1 = 0; j1 <i1; j1++) {
-            w = A[i1][j1];
-            for (k1 = 0; k1 < j1; k1++) {
-                w = w -  A[i1][k1] * A[k1][j1];
+        for (j = 0; j <i1; j++) {
+            w = A[i1][j];
+            for (k1 = 0; k1 < j; k1++) {
+                w = w -  A[i1][k1] * A[k1][j];
             }
-            A[i1][j1] = w / A[j1][j1];
+            A[i1][j] = w / A[j][j];
         }
         for (j2 = i1; j2 < N; j2++) {
             w = A[i1][j2];

@@ -4,7 +4,7 @@ stencil computation on a 2-D grid
 */
 #define N 10
 
-int main(int argc, char * argv[])
+int main()
 {
 
 int i,j;
