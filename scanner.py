@@ -10,6 +10,7 @@ scans the code and extract loop nest information
 import re
 from costmodel import *
 import math
+import operator
 
 class Scanner:
     def __init__(self, file):
@@ -51,30 +52,63 @@ class Scanner:
 
             if '#define' in line:                               #currently, symbols are only read via #define
                 l = line.split(' ')
-                symbols.update({l[1].strip(): int(l[2])})
+                try:
+                    symbols.update({l[1].strip(): int(l[2])})
+                except ValueError:
+                    continue
 
             if 'for' in line:
                 #extract the loop control logic
                 inside = True
                 d = d + 1  # new loop level
                 stmt_ready = True
+                gotStart = False
+                gotEnd = False
 
                 l = re.split(r'\(|\)', line.strip())        #ideally this should break the line into 3 parts, l[1] has the loop control data
+
                 l1 = l[1].split(';')                        #again, 3 pieces
                 idx = l1[0].split('=')[0]
                 if idx not in loop_ids:
-                    loop_ids.append(idx)
+                    loop_ids.append(idx.strip())
                 start = l1[0].split('=')[1]
-                l2 = re.split(r'<|>|<=|>=',l1[1])
+
+                if start.strip() in symbols:              #if terminate condition is a defined variable
+                    start = symbols[start.strip()]
+                elif start.strip() in loop_ids:
+                    start = math.log(max(symbols.iteritems(), key=operator.itemgetter(1))[1]) #a heuristic approximation of the log2 of the largest symbol
+                else:
+                    #start bound is most likely an expression including either a symbol or another loop bound
+                    for symbol in symbols:              #more complicated end conditions such as N-1, ...
+                        if symbol in re.split(r'\+|-|\*', start.strip()):
+                            start = symbols[symbol]
+                            gotStart = True
+                            break
+                    if not gotStart:
+                        for var in loop_ids:
+                            if var in re.split(r'\+|-|\*', start.strip()):
+                                start = math.log(max(symbols.iteritems(), key=operator.itemgetter(1))[1]) #a heuristic approximation of the log2 of the largest symbol
+                                break
+
+                l2 = re.split(r'<=|>=|<|>|',l1[1])
                 end = l2[1]
 
                 if end.strip() in symbols:              #if terminate condition is a defined variable
                     end = symbols[end.strip()]
+                elif end.strip() in loop_ids:
+                    end = math.log(max(symbols.iteritems(), key=operator.itemgetter(1))[1])  # a heuristic approximation of the log2 of the largest symbol
                 else:
-                    for symbol in symbols:              #more complicated end conditions such as N-1, ...
-                        if symbol in re.split(r'\+|-|\*', end):
+                    for symbol in symbols:
+                        if symbol in re.split(r'\+|-|\*', end.strip()):
                             end = symbols[symbol]
+                            print end
+                            gotEnd = True
                             break
+                    if not gotEnd:
+                        for var in loop_ids:
+                            if var in re.split(r'\+|-|\*', end.strip()):
+                                end = math.log(max(symbols.iteritems(), key=operator.itemgetter(1))[1]) #a heuristic approximation of the log2 of the largest symbol
+                                break
 
                 limits.append((idx, start,end))
                                                             # TODO: extract loop bounds and infer if they are > 0
@@ -85,7 +119,8 @@ class Scanner:
                     #i = i + x
                     rhs = (step.split('=')[1]).strip()
                     step_size = int(re.split(r'\+|-|\*|/',rhs)[-1])
-                num_itrs.append(math.ceil((int(end) - int(start))/step_size))
+                print start, end, step_size
+                num_itrs.append(math.ceil((float(end) - float(start))/step_size))
 
                 continue
 
