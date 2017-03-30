@@ -21,7 +21,7 @@ void main(){
         for (i2 = 0; i2 < M; i2++){
             Q[i2][k1] = A[i2][k1] / R[k1][k1];
         }
-        for (j = k1 + 1; j < N; j++)
+        for (j = k1+1; j < N; j++)
 	    {
 	        R[k1][j] = 0.0;
 	        for (i3 = 0; i3 < M; i3++){

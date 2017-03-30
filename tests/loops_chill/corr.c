@@ -23,7 +23,7 @@ void main(){
             stddev[j2] += (data[i2][j2] - mean[j2]) * (data[i2][j2] - mean[j2]);
         }
         stddev[j2] = stddev[j2]/(N*1.0);
-        // should take the sqrt but we omit that for now
+        // should take the sqrt but we omit that now
     }
 
     // omit 'reduce column vectors' loop

@@ -1,5 +1,4 @@
 #define N 1000
-#include <math.h>
 
 float A[N][N];
 
@@ -19,7 +18,7 @@ void main(){
             A[i1][i1] = A[i1][i1] - A[i1][k2] * A[i1][k2];
         }
 
-        A[i1][i1] = sqrt(A[i1][i1]);
+        //A[i1][i1] = sqrt(A[i1][i1]);
   }
 
 }

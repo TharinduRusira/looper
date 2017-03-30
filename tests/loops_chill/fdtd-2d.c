@@ -26,8 +26,8 @@ void main(){
 	            ex[i2][j3] = ex[i2][j3] - 0.5*(hz[i2][j3]-hz[i2][j3-1]);
 	        }
 	    }
-        for (i3 = 0; i3 < NX - 1; i3++){
-	        for (j4 = 0; j4 < NY - 1; j4++){
+        for (i3 = 0; i3 < NX-1; i3++){
+	        for (j4 = 0; j4 < NY-1; j4++){
 	            hz[i3][j4] = hz[i3][j4] - 0.7*  (ex[i3][j4+1] - ex[i3][j4] + ey[i3+1][j4] - ey[i3][j4]);
 	        }
 	     }

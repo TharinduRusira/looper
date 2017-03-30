@@ -1,4 +1,5 @@
 #define N 1000
+
 #define match(b1, b2) (((b1)+(b2)) == 3 ? 1 : 0)
 #define max_score(s1, s2) ((s1 >= s2) ? s1 : s2)
 
