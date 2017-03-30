@@ -120,7 +120,10 @@ class Scanner:
                     rhs = (step.split('=')[1]).strip()
                     step_size = int(re.split(r'\+|-|\*|/',rhs)[-1])
                 print start, end, step_size
-                num_itrs.append(math.ceil((float(end) - float(start))/step_size))
+                x = math.fabs(math.ceil((float(end) - float(start))/step_size))
+                if x == 0.0:
+                    x = 1 # 0 messes up the multiplication later on
+                num_itrs.append(x)
 
                 continue
 
@@ -156,8 +159,8 @@ class Scanner:
                 continue
 
         tot_itrs = 1
-        for limit in limits:                #limits = [(idx, start, end)]
-            tot_itrs *= (int(limit[2]) - int(limit[1]))       # end - start
+        for loop in range(len(num_itrs)):                #limits = [(idx, start, end)]
+            tot_itrs *= num_itrs[loop]       # end - start
 
         print symbols
         print limits
