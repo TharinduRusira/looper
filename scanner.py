@@ -31,8 +31,8 @@ class Scanner:
         linenumber = 0
         num_itrs = []           #number of iterations for each loop level
         symbols = {}            #hold #define values
-        vars = {}               #hold variable names
-        mem = {}                #global accesses, cache/registry accesses, memory reuse info
+        vars = []               #hold variable names
+        mem = {'ref':0}                #global accesses, cache/registry accesses, memory reuse info
         arith = {}              #+, - , *, /, %,
         add = 0
         sub = 0
@@ -50,12 +50,27 @@ class Scanner:
             if line.strip() == '\n':            #empty line
                 continue
 
+            if line.strip().startswith('//'):
+                continue
+
             if '#define' in line:                               #currently, symbols are only read via #define
                 l = line.split(' ')
                 try:
                     symbols.update({l[1].strip(): int(l[2])})
                 except ValueError:
                     continue
+
+            if 'float' in line:
+                if '=' in line:
+                    first = (re.split(r'=', line)[0]).strip()
+                    vars.append(first.split()[1].strip())
+                else:
+                    #a line that declares float data. Assume format float A[N][N]
+                    #assume one declaration for a line
+                    first = (re.split(r'\[', line))[0]
+                    #now remove the data type 'float'
+                    vars.append(first.split()[1])
+
 
             if 'for' in line:
                 #extract the loop control logic
@@ -124,7 +139,6 @@ class Scanner:
                 if x == 0.0:
                     x = 1 # 0 messes up the multiplication later on
                 num_itrs.append(x)
-
                 continue
 
             if '{' in line:
@@ -156,7 +170,15 @@ class Scanner:
                     mul = mul + line.count('*')
                     div = div + line.count('/')
                     mod = mod + line.count('%')
+
+                    for v in vars:
+                        if v in line:
+                            mem['ref'] += line.count(v)
                 continue
+
+
+
+        print vars
 
         tot_itrs = 1
         for loop in range(len(num_itrs)):                #limits = [(idx, start, end)]

@@ -6,7 +6,7 @@ will consider arithmetic operations, memory accesses etc.
 def cost(mem, arith, tot_lines, tot_itrs):
     #return cost
     #mc = mem['memops']/tot_lines
-    mc = 1
+    mc = float(mem['ref']*tot_itrs/tot_lines)
     ac = float(arith['add']+arith['sub']+8*arith['mul']+10*arith['div']+10*arith['mod'])/float(tot_lines)    #weighted arithmetic cost per line
 
     return {'memcost':mc, 'arithcost': ac}

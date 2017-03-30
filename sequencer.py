@@ -42,10 +42,9 @@ class Sequencer:
         itr = list(itertools.product(input_range,loop_range,stms_range, amount_range))
         return itr
 
-
     def run(self, itr):
 
-        csvout = open('data_'+self.xform+'.csv','a+')
+        csvout = open('data_'+self.xform+'_'+self.cfile['name'].split('.c')[0]+'.csv','a+')
         csvwriter = csv.writer(csvout, delimiter=',')
         csvreader = csv.reader(csvout)
         l = None
@@ -68,6 +67,7 @@ class Sequencer:
                 #verify p.returncode, if 0, success. Else invalid, cost = -INF
 
                 if p.returncode != 0 :
+                    print 'invalid!'
                     elapsed = -1000.0
                 else:
                     #compile run rose_*.c and get execution time
@@ -110,7 +110,9 @@ class Sequencer:
                 p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
                 p.communicate()         #wait for the returncode
                 #verify p.returncode, if 0, success. Else invalid, cost = -INF
+                print p.returncode
                 if p.returncode != 0 :
+                    print 'invalid'
                     elapsed = -1000.0
                 else:
                     #compile run rose_*.c and get execution time
