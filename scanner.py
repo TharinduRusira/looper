@@ -27,6 +27,11 @@ class Scanner:
         stmt_ready = False
         rbracks = 0
         lbracks = 0
+
+        nests = []              #number of loop nests, and their depths. nests[i] = depth of i-th nest
+        nest = 0                #current loop nest
+        newNest = True
+
         inside = False
         linenumber = 0
         num_itrs = []           #number of iterations for each loop level
@@ -39,6 +44,7 @@ class Scanner:
         mul = 0
         div = 0
         mod = 0
+
 
         while True:
             line = fp.readline()
@@ -60,7 +66,7 @@ class Scanner:
                 except ValueError:
                     continue
 
-            if 'float' in line:
+            if  line.strip().startswith('float'):
                 if '=' in line:
                     first = (re.split(r'=', line)[0]).strip()
                     vars.append(first.split()[1].strip())
@@ -76,12 +82,18 @@ class Scanner:
                 #extract the loop control logic
                 inside = True
                 d = d + 1  # new loop level
+                if newNest:
+                    nest +=1
+                    nests.append(0)
+                    newNest = False
+
+                nests[nest-1] += 1
+
                 stmt_ready = True
                 gotStart = False
                 gotEnd = False
 
                 l = re.split(r'\(|\)', line.strip())        #ideally this should break the line into 3 parts, l[1] has the loop control data
-
                 l1 = l[1].split(';')                        #again, 3 pieces
                 idx = l1[0].split('=')[0]
                 if idx not in loop_ids:
@@ -134,25 +146,28 @@ class Scanner:
                     #i = i + x
                     rhs = (step.split('=')[1]).strip()
                     step_size = int(re.split(r'\+|-|\*|/',rhs)[-1])
-                print start, end, step_size
+                #print start, end, step_size
                 x = math.fabs(math.ceil((float(end) - float(start))/step_size))
                 if x == 0.0:
                     x = 1 # 0 messes up the multiplication later on
                 num_itrs.append(x)
-                continue
+                #continue
 
             if '{' in line:
                 if inside and d>0:
                     lbracks = lbracks + 1
                     stmt_ready = True
+
                 continue
 
             if '}' in line:
                 if inside:
                     rbracks = rbracks + 1
+
                 if lbracks == rbracks:              #braces are balanced
                     stmt_ready = False
-                    inside = False                  #leaving the loop nest
+                    inside = False                 #leaving the loop nest
+                    newNest = True
                 else:
                     stmt_ready = True
                 continue
@@ -177,15 +192,14 @@ class Scanner:
                 continue
 
 
-
-        print vars
-
         tot_itrs = 1
         for loop in range(len(num_itrs)):                #limits = [(idx, start, end)]
             tot_itrs *= num_itrs[loop]       # end - start
 
-        print symbols
-        print limits
+        #print symbols
+        #print limits
+        #print 'Nests=', nests, 'depth=', d, 'nests=', nest
+
         print 'iterations='+ str(tot_itrs)
         arith = {'add': add, 'sub': sub, 'mul': mul, 'div': div, 'mod': mod}
         c = cost(mem= mem, arith=arith, tot_lines=linenumber, tot_itrs=tot_itrs)
