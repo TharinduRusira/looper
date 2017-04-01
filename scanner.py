@@ -35,6 +35,7 @@ class Scanner:
         inside = False
         linenumber = 0
         num_itrs = []           #number of iterations for each loop level
+        num_itrs_per_nest = []
         symbols = {}            #hold #define values
         vars = []               #hold variable names
         mem = {'ref':0}                #global accesses, cache/registry accesses, memory reuse info
@@ -86,6 +87,7 @@ class Scanner:
                     nest +=1
                     nests.append(0)
                     newNest = False
+                    num_itrs_per_nest.append(0)
 
                 nests[nest-1] += 1
 
@@ -151,6 +153,7 @@ class Scanner:
                 if x == 0.0:
                     x = 1 # 0 messes up the multiplication later on
                 num_itrs.append(x)
+                num_itrs_per_nest[nest-1] +=x
                 #continue
 
             if '{' in line:
@@ -199,8 +202,8 @@ class Scanner:
         #print symbols
         #print limits
         #print 'Nests=', nests, 'depth=', d, 'nests=', nest
-
-        print 'iterations='+ str(tot_itrs)
+        #print num_itrs_per_nest
+        #print 'iterations='+ str(tot_itrs)
         arith = {'add': add, 'sub': sub, 'mul': mul, 'div': div, 'mod': mod}
         c = cost(mem= mem, arith=arith, tot_lines=linenumber, tot_itrs=tot_itrs)
         return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber,
