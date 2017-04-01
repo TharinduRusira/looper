@@ -23,6 +23,8 @@ class Scanner:
         loop_ids = []
         stms = 0                    #number of stms
         stmt_list = []
+        stmt_nest = []              #number of stms in each nest
+
         limits= []
         stmt_ready = False
         rbracks = 0
@@ -88,6 +90,7 @@ class Scanner:
                     nests.append(0)
                     newNest = False
                     num_itrs_per_nest.append(0)
+                    stmt_nest.append(0)
 
                 nests[nest-1] += 1
 
@@ -180,6 +183,7 @@ class Scanner:
                     stms = stms + 1
                     stmt_ready = False
                     stmt_list.append([])
+                    stmt_nest[nest-1] +=1
                 if inside:
                     (stmt_list[stms-1]).append(line.strip())
                     #extract computational and memory info
@@ -199,12 +203,15 @@ class Scanner:
         for loop in range(len(num_itrs)):                #limits = [(idx, start, end)]
             tot_itrs *= num_itrs[loop]       # end - start
 
+        #DEBUG PRINTS
         #print symbols
         #print limits
         #print 'Nests=', nests, 'depth=', d, 'nests=', nest
         #print num_itrs_per_nest
         #print 'iterations='+ str(tot_itrs)
+        #print stmt_nest
+
         arith = {'add': add, 'sub': sub, 'mul': mul, 'div': div, 'mod': mod}
         c = cost(mem= mem, arith=arith, tot_lines=linenumber, tot_itrs=tot_itrs)
         return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber,
-                'stms_list': stmt_list, 'mem':c['memcost'], 'arith': c['arithcost']}
+                'stms_list': stmt_list, 'mem':c['memcost'], 'arith': c['arithcost'], 'stmt_nest': stmt_nest, 'nests': nests}
