@@ -43,6 +43,8 @@ class Scanner:
         vars = []               #hold variable names
         mem = {'ref':0}                #global accesses, cache/registry accesses, memory reuse info
         ARITH = []              # number of operations for each nest
+        MEM = []                #memory references for each loop nest
+
         add = 0
         sub = 0
         mul = 0
@@ -74,6 +76,13 @@ class Scanner:
                 if '=' in line:
                     first = (re.split(r'=', line)[0]).strip()
                     vars.append(first.split()[1].strip())
+                elif ',' in line:           #multiple declarations in the same line
+                    first = re.split(r'float|,|;', line)[1:-1]
+                    for f in range(len(first)):
+                        vars.append(first[f].strip())
+                elif '[' not in line and ',' not in line:
+                    first = re.split(r'float|;', line)[1]
+                    vars.append(first.strip())
                 else:
                     #a line that declares float data. Assume format float A[N][N]
                     #assume one declaration for a line
@@ -94,6 +103,7 @@ class Scanner:
                     stmt_nest.append(0)
                     STMT_LIST.append([])
                     ARITH.append({'add':0, 'sub': 0, 'mul': 0, 'div': 0, 'mod': 0 })
+                    MEM.append({'ref':0})
 
                 nests[nest-1] += 1
 
@@ -206,7 +216,7 @@ class Scanner:
 
                     for v in vars:
                         if v in line:
-                            mem['ref'] += line.count(v)
+                            MEM[nest-1]['ref'] += line.count(v)
                 continue
 
         #tot_itrs = 1
@@ -224,9 +234,11 @@ class Scanner:
         #print num_itrs_per_nest
         #print 'iterations='+ str(tot_itrs)
         #print stmt_nest
+        #print vars
 
         #arith = {'add': add, 'sub': sub, 'mul': mul, 'div': div, 'mod': mod}
         #print ARITH
-        c = cost(mem= mem, arith=ARITH, tot_lines=linenumber, tot_itrs=tot_itrs, nests=len(nests))
+        #print MEM
+        c = cost(mem= MEM, arith=ARITH, tot_lines=linenumber, tot_itrs=tot_itrs, nests=len(nests))
         return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber,
                 'stms_list': stmt_list, 'mem':c['memcost'], 'arith': c['arithcost'], 'stmt_nest': stmt_nest, 'nests': nests}
