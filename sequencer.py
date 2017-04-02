@@ -36,11 +36,29 @@ class Sequencer:
 
     def generate_space(self):
         input_range = [1, 2, 3]  # log(input size)
-        loop_range = range(1, self.fdata['depth']+1)
-        stms_range = range(0, self.fdata['depth'])
-        amount_range = [4,8,16,32,64]
-        itr = list(itertools.product(input_range,loop_range,stms_range, amount_range))
-        return itr
+
+        loop_range=[]
+        stms_range = []
+        itrs = []
+
+        if self.xform == 'tile':
+            amount_range = [4,8,16,32,64]
+        elif self.xform == 'unroll':
+            amount_range = [4, 8, 16, 32, 64]
+        else:                                       #change later as necessary
+            amount_range = [4, 8, 16, 32, 64]
+
+        for n in range(len(self.fdata['nests'])):
+            loop_range.append(range(1,self.fdata['nests'][n]+1 ))             # num loops in the n-th nest
+            stms_range.append(range(0,self.fdata['stmt_nest'][n]))             # num stms in the n-th nest
+
+            itrs.append(list(itertools.product(input_range,loop_range[n],stms_range[n], amount_range)))      #len(nests) number of iterators
+
+        #print loop_range
+        #print stms_range
+        #print itrs
+
+        return itrs
 
     def run(self, itr):
 
@@ -137,7 +155,41 @@ class Sequencer:
                     #os.remove('tmp.bin')
 
         elif self.xform == 'peel':
-            pass
+            for line in csvreader:
+                l = line
+                break
+            if l is None:
+                csvwriter.writerow(['input', 'depth', 'stms', 'arithmetic', 'memory', 'peeled loop', 'peeled stmt',
+                         'peel amount', 'cost'])  # headers
+
+            for i in itr:
+                self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=0,
+                                              transformations=[['peel', i[2], i[1], i[3]]])
+
+                p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
+                p.communicate()         #wait for the returncode
+                #verify p.returncode, if 0, success. Else invalid, cost = -INF
+                print p.returncode
+                if p.returncode != 0 :
+                    print 'invalid'
+                    elapsed = -1000.0
+                else:
+                    #compile run rose_*.c and get execution time
+                    p1 = Popen(('gcc rose_'+self.cfile['name']+' -o tmp.bin').split(), stdout=PIPE, stderr=PIPE)
+                    p1.communicate()
+                    if  p1.returncode != 0:
+                        print 'compiling transformed code failed with error code '+ str(p1.returncode) + '\n'
+                        continue
+
+                    start = time.clock()
+                    p2 = subprocess.call('./tmp.bin')
+                    elapsed = time.clock()*1000 - start*1000        #in ms
+                    if p2 != 0:          #verify success before committing results
+                        print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
+                        continue
+
+                csvwriter.writerow([i[0],self.fdata['depth'] , self.fdata['stms'], str(self.fdata['arith']), str(self.fdata['mem']), i[1], i[2], i[3], elapsed])
+
 
         elif self.xform == 'scale':
             pass
