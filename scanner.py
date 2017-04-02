@@ -23,6 +23,7 @@ class Scanner:
         loop_ids = []
         stms = 0                    #number of stms
         stmt_list = []
+        STMT_LIST = []              #top level holder of all stmts
         stmt_nest = []              #number of stms in each nest
 
         limits= []
@@ -41,7 +42,7 @@ class Scanner:
         symbols = {}            #hold #define values
         vars = []               #hold variable names
         mem = {'ref':0}                #global accesses, cache/registry accesses, memory reuse info
-        arith = {}              #+, - , *, /, %,
+        ARITH = []              # number of operations for each nest
         add = 0
         sub = 0
         mul = 0
@@ -91,6 +92,8 @@ class Scanner:
                     newNest = False
                     num_itrs_per_nest.append(0)
                     stmt_nest.append(0)
+                    STMT_LIST.append([])
+                    ARITH.append({'add':0, 'sub': 0, 'mul': 0, 'div': 0, 'mod': 0 })
 
                 nests[nest-1] += 1
 
@@ -186,6 +189,7 @@ class Scanner:
                     stmt_nest[nest-1] +=1
                 if inside:
                     (stmt_list[stms-1]).append(line.strip())
+                    STMT_LIST[nest-1].append(line.strip())
                     #extract computational and memory info
                     add = add + line.count('+')
                     sub = sub + line.count('-')
@@ -193,15 +197,25 @@ class Scanner:
                     div = div + line.count('/')
                     mod = mod + line.count('%')
 
+                    ARITH[nest-1]['add'] += line.count('+')
+                    ARITH[nest-1]['sub'] += line.count('-')
+                    ARITH[nest-1]['mul'] += line.count('*')
+                    ARITH[nest-1]['div'] += line.count('/')
+                    ARITH[nest-1]['mod'] += line.count('%')
+
+
                     for v in vars:
                         if v in line:
                             mem['ref'] += line.count(v)
                 continue
 
+        #tot_itrs = 1
+        #for loop in range(len(num_itrs)):                #limits = [(idx, start, end)]
+        #    tot_itrs *= num_itrs[loop]       # end - start
 
-        tot_itrs = 1
-        for loop in range(len(num_itrs)):                #limits = [(idx, start, end)]
-            tot_itrs *= num_itrs[loop]       # end - start
+        tot_itrs = 0
+        for n in range(len(nests)):
+            tot_itrs+= num_itrs_per_nest[n]
 
         #DEBUG PRINTS
         #print symbols
@@ -211,7 +225,8 @@ class Scanner:
         #print 'iterations='+ str(tot_itrs)
         #print stmt_nest
 
-        arith = {'add': add, 'sub': sub, 'mul': mul, 'div': div, 'mod': mod}
-        c = cost(mem= mem, arith=arith, tot_lines=linenumber, tot_itrs=tot_itrs)
+        #arith = {'add': add, 'sub': sub, 'mul': mul, 'div': div, 'mod': mod}
+        #print ARITH
+        c = cost(mem= mem, arith=ARITH, tot_lines=linenumber, tot_itrs=tot_itrs, nests=len(nests))
         return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber,
                 'stms_list': stmt_list, 'mem':c['memcost'], 'arith': c['arithcost'], 'stmt_nest': stmt_nest, 'nests': nests}
