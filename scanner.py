@@ -239,6 +239,9 @@ class Scanner:
         #arith = {'add': add, 'sub': sub, 'mul': mul, 'div': div, 'mod': mod}
         #print ARITH
         #print MEM
-        c = cost(mem= MEM, arith=ARITH, tot_lines=linenumber, tot_itrs=tot_itrs, nests=len(nests))
+
+        c = cost(mem= MEM, arith=ARITH, tot_lines=linenumber, tot_itrs=num_itrs_per_nest, nests=nests, num_nests=len(nests))
+
+        #c['memcost'], c['arithcost'] are now lists of length len(nests)
         return {"depth":d, 'stms':stms, 'loops':loop_ids, 'lines': linenumber,
-                'stms_list': stmt_list, 'mem':c['memcost'], 'arith': c['arithcost'], 'stmt_nest': stmt_nest, 'nests': nests}
+                'stms_list': STMT_LIST, 'mem':c['memcost'], 'arith': c['arithcost'], 'stmt_nest': stmt_nest, 'loop_nests': nests}
