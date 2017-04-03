@@ -1,4 +1,7 @@
-#define N 1000
+#define N 100
+
+
+void main(){
 
 float x1[N];
 float x2[N];
@@ -8,7 +11,6 @@ float A[N][N];
 
 int i1,j,i2,j2;
 
-void main(){
  	for (i1 = 0; i1 < N; i1++){
         for (j = 0; j < N; j++){
             x1[i1] = x1[i1] + A[i1][j] * y_1[j];

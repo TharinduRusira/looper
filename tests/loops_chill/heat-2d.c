@@ -2,10 +2,12 @@
 #define T 100
 #define M 100
 
-int t, i,j;
+
 
 void main(){
+
 float A[N][N][N];
+int t, i,j;
 
 for(t=1;t<T-1;t++){
     for(i=1;i<N-1;i++){

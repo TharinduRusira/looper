@@ -1,10 +1,12 @@
-#define N 1000
+#define N 100
+
+
+void main(){
 
 float A[N][N];
 
 int i1, j, k1, k2;
 
-void main(){
     for (i1 = 0; i1 < N; i1++) {
      //j<i
         for (j = 0; j < i1; j++) {

@@ -1,4 +1,7 @@
-#define N 1000
+#define N 100
+
+
+void main(){
 
 float r[N];
 float y[N];
@@ -10,7 +13,6 @@ float sum;
 
 int i1,k1, i2, i3;
 
-void main(){
     y[0] = -1.0*r[0];
     beta = 1.0;
     alpha = -1.0 * r[0];

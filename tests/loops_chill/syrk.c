@@ -1,5 +1,8 @@
-#define N 1000
-#define M 1000
+#define N 100
+#define M 100
+
+
+void main(){
 
 float alpha = 1.5;
 float beta = 1.2;
@@ -9,7 +12,6 @@ float C[N][N];
 
 int i1,j,k1, j2    ;
 
-void main(){
     for (i1 = 0; i1 < N; i1++) {
         for (j = 0; j <= i1; j++){
             C[i1][j] = beta*C[i1][j];

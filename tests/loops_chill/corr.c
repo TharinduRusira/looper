@@ -1,5 +1,8 @@
-#define N 1000
-#define M 1000
+#define N 100
+#define M 100
+
+
+void main(){
 
 float data[N][M];
 float corr[M][M];
@@ -8,7 +11,7 @@ float stddev[M];
 
 int i1,j,k1, i2,j2,k2, i3,j3,k3;
 
-void main(){
+
     for(j=0;j<M;j++){
         mean[j] = 0.0;
         for(i1=0;i1<N;i1++){

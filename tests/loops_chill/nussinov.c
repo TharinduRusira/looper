@@ -1,14 +1,16 @@
-#define N 1000
+#define N 100
 
 #define match(b1, b2) (((b1)+(b2)) == 3 ? 1 : 0)
 #define max_score(s1, s2) ((s1 >= s2) ? s1 : s2)
+
+
+void main(){
 
 float seq[N];
 float table[N][N];
 
 int i1, j, k1;
 
-void main(){
     for (i1 = N-1; i1 >= 0; i1--) {
         for (j=i1+1; j<N; j++) {
             if (j-1>=0)

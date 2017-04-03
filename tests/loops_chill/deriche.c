@@ -1,5 +1,8 @@
-#define H 1000
-#define W 1000
+#define H 100
+#define W 100
+
+
+void main(){
 
 float alpha = 0.25;
 
@@ -18,8 +21,6 @@ float k;
 float a1, a2, a3, a4, a5, a6,a7, a8, b1,b2, c1, c2;
 
 int i1,j, i2,j2, i3,j3, i4,j4, i5,j5, i6,j6;
-
-void main(){
 
    k = 5.0* alpha; // omitting the computation of exponential expression
    a1 = a5 = k;

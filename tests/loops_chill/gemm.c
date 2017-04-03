@@ -1,7 +1,9 @@
-#define I 1000
-#define J 1000
-#define K 1000
+#define I 100
+#define J 100
+#define K 100
 
+
+void main(){
 float alpha = 5.0;
 float beta = 10.0;
 
@@ -11,7 +13,7 @@ float C[I][J];
 
 int i1,j,k1;
 
-void main(){
+
     for(i1=0;i1<I; i1++){
         for(j=0;j<J; j++){
             C[i1][j] = C[i1][j]*beta;

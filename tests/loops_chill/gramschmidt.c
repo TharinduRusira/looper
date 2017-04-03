@@ -1,5 +1,8 @@
-#define N 1000
-#define M 1000
+#define N 100
+#define M 100
+
+
+void main(){
 
 float A[M][N];
 float R[N][N];
@@ -9,7 +12,6 @@ float nrm;
 
 int i1, j, k1, i2, i3, i4;
 
-void main(){
     for (k1 = 0; k1 < N; k1++)
     {
         nrm = 0.0;

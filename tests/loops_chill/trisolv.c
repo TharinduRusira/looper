@@ -1,4 +1,7 @@
-#define N 1000
+#define N 100
+
+
+void main(){
 
 float L[N][N];
 float x[N];
@@ -6,7 +9,6 @@ float b[N];
 
 int i1,j;
 
-void main(){
     for (i1 = 0; i1 < N; i1++)
     {
         x[i1] = b[i1];

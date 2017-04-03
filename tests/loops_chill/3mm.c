@@ -1,8 +1,8 @@
-#define NI 1000
-#define NJ 1000
-#define NK 1000
-#define NL 1000
-#define NM 1000
+#define NI 100
+#define NJ 100
+#define NK 100
+#define NL 100
+#define NM 100
 
 float E[NI][NJ];
 float A[NI][NK];

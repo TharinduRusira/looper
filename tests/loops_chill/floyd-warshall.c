@@ -1,10 +1,12 @@
-#define N 1000
+#define N 100
+
+
+void main(){
 
 float path[N][N];
 
 int i1, j, k1;
 
-void main(){
     for (k1 = 0; k1 < N; k1++)
     {
         for(i1 = 0; i1 < N; i1++){

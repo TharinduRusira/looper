@@ -1,4 +1,6 @@
-#define N 1000
+#define N 100
+
+void main(){
 
 float alpha = 1.5;
 float beta = 1.2;
@@ -11,7 +13,6 @@ float y[N];
 
 int i1,j;
 
-void main(){
  	for(i1=0;i1<N;i1++){
         tmp[i1] = 0.0;
         y[i1] = 0.0;

@@ -1,4 +1,5 @@
-#define N 1000
+#define N 100
+
 void main()
 {
 int i,j,k;

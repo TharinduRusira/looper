@@ -2,7 +2,7 @@
 Out of place 5-pt
 stencil computation on a 2-D grid
 */
-#define N 10
+#define N 100
 
 int main()
 {

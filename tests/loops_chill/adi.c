@@ -1,5 +1,8 @@
-#define N 1000
-#define TSTEPS 1000
+#define N 100
+#define TSTEPS 100
+
+
+void main(){
 
 float u[N][N];
 float v[N][N];
@@ -12,8 +15,6 @@ float mul1, mul2;
 float a,b,c,d,e,f;
 
 int t, i1, j, i2, j2, j3, j4;
-
-void main(){
 
     DX = 1.0/N;
     DY = 1.0/N;

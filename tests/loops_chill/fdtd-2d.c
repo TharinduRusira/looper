@@ -1,6 +1,9 @@
-#define TMAX 1000
-#define NX 1000
-#define NY 1000
+#define TMAX 100
+#define NX 100
+#define NY 100
+
+
+void main(){
 
 float ex[NX][NY];
 float ey[NX][NY];
@@ -9,7 +12,6 @@ float _fict_[TMAX];
 
 int t, i1, j, i2,j2, i3, j3, j4;
 
-void main(){
     for(t = 0; t < TMAX; t++)
     {
         for (j = 0; j < NY; j++){

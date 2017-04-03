@@ -1,4 +1,7 @@
-#define N 1000
+#define N 100
+
+
+void main(){
 
 float A[N][N];
 float b[N];
@@ -9,7 +12,6 @@ float w;
 
 int i1,j,k1, j2,k2, i2, j3, i3, j4;
 
-void main(){
     for (i1 = 0; i1 < N; i1++) {
         for (j = 0; j <i1; j++) {
             w = A[i1][j];

@@ -1,5 +1,8 @@
-#define M 1000
-#define N 1000
+#define M 100
+#define N 100
+
+
+void main(){
 
 float alpha = 1.5;
 float beta = 1.2;
@@ -9,7 +12,6 @@ float B[M][N];
 
 int i1,j,k1    ;
 
-void main(){
     for (i1 = 0; i1 < M; i1++){
         for (j = 0; j < N; j++) {
             for (k1 = i1+1; k1 < M; k1++){

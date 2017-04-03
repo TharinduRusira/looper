@@ -1,7 +1,9 @@
-#define I 1000
-#define J 1000
-#define K 1000
-#define L 1000
+#define I 100
+#define J 100
+#define K 100
+#define L 100
+
+void main(){
 
 float alpha = 1.5;
 float beta = 1.2;
@@ -14,7 +16,7 @@ float D[I][L];
 
 int i1, j, k1, i2,j2, k2;
 
-void main(){
+
     for (i1 = 0; i1 < I; i1++){
         for (j = 0; j < J; j++)
         {

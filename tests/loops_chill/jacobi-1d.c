@@ -1,12 +1,14 @@
-#define N 1000
-#define TSTEPS 1000
+#define N 100
+#define TSTEPS 100
+
+
+void main(){
 
 float A[N];
 float B[N];
 
 int t, i1,i2;
 
-void main(){
     for (t = 0; t < TSTEPS; t++)
     {
         for (i1 = 1; i1 < N-1; i1++){
