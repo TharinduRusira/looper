@@ -39,8 +39,6 @@ class Sequencer:
         stms_range = []
         itrs = []
 
-        input_range = [3]           #[1, 2, 3]  # log(input size)
-
         if self.xform == 'tile':
             amount_range = [4,8,16,32,64]
         elif self.xform == 'unroll':
@@ -52,7 +50,7 @@ class Sequencer:
             loop_range.append(range(1,self.fdata['loop_nests'][n]+1 ))             # num loops in the n-th nest
             stms_range.append(range(0,self.fdata['stmt_nest'][n]))             # num stms in the n-th nest
 
-            itrs.append(list(itertools.product(input_range,loop_range[n],stms_range[n], amount_range)))      #len(nests) number of iterators
+            itrs.append(list(itertools.product(loop_range[n],stms_range[n], amount_range)))      #len(nests) number of iterators
 
         #print loop_range
         #print stms_range
@@ -62,7 +60,7 @@ class Sequencer:
 
     def run(self, itrs):
 
-        csvout = open('data_'+self.xform+'_'+self.cfile['name'].split('.c')[0]+'.csv','a+')
+        csvout = open('data/data_'+self.xform+'_'+self.cfile['name'].split('.c')[0]+'.csv','a+')
         csvwriter = csv.writer(csvout, delimiter=',')
         csvreader = csv.reader(csvout)
 
@@ -76,17 +74,17 @@ class Sequencer:
                 break
 
             if l is None:
-                csvwriter.writerow(['input', 'nests', 'stms', 'arithmetic', 'memory', 'tiled nest', 'tiled loop', 'tiled stmt', 'tile size',
+                csvwriter.writerow(['nests', 'stms', 'arithmetic', 'memory', 'tiled nest', 'tiled loop', 'tiled stmt', 'tile size',
                          'cost'])  # headers
             for itr in itrs:
                 for i in itr:
                     self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=n,
-                                                  transformations=[['tile', i[2], i[1], i[3]]])                             #generate CHiLL script
-                    subprocess.call(['cat', 'xform.script'])
+                                                  transformations=[['tile', i[1], i[0], i[2]]])                             #generate CHiLL script
                     p = Popen('/home/tharindu/chill-ins-new/bin/chill xform.script'.split(), stdout=PIPE, stderr=PIPE)                                       #transform code
                     p.communicate()         #wait for the returncode
                     #verify p.returncode, if 0, success. Else invalid, cost = -INF
 
+                    print p.returncode
                     if p.returncode != 0 :
                         print 'invalid!'
                         elapsed = -1000.0
@@ -110,7 +108,7 @@ class Sequencer:
                     #fp = open(self.xform + '_data.txt', 'a')
                     #fp.write(str(i[0])+ ','+ str(i[1]) + ',' + str(i[2]) + ',' + str(i[3]) + ',' + str(self.fdata['arith']) + ',' + str(self.fdata['mem']) + ',' + str(cost)+'\n')
                     #fp.close()
-                    csvwriter.writerow([i[0],self.fdata['loop_nests'] , self.fdata['stmt_nest'], str(self.fdata['arith']), str(self.fdata['mem']), n, i[1], i[2], i[3], elapsed])
+                    csvwriter.writerow([self.fdata['loop_nests'] , self.fdata['stmt_nest'], str(self.fdata['arith']), str(self.fdata['mem']), n, i[0], i[1], i[2], elapsed])
 
                 n += 1          #go to next loop nest
                     #clean
@@ -124,14 +122,14 @@ class Sequencer:
                 l = line
                 break
             if l is None:
-                csvwriter.writerow(['input', 'nests', 'stms', 'arithmetic', 'memory', 'unrolled nest', 'unrolled loop', 'unrolled stmt',
+                csvwriter.writerow(['nests', 'stms', 'arithmetic', 'memory', 'unrolled nest', 'unrolled loop', 'unrolled stmt',
                          'unroll size', 'cost'])  # headers
             for itr in itrs:
                 for i in itr:
                     self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=n,
-                                                  transformations=[['unroll', i[2], i[1], i[3]]])
+                                                  transformations=[['unroll', i[1], i[0], i[2]]])
 
-                    p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
+                    p = Popen('/home/tharindu/chill-ins-new/bin/chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
                     p.communicate()         #wait for the returncode
                     #verify p.returncode, if 0, success. Else invalid, cost = -INF
                     print p.returncode
@@ -153,7 +151,7 @@ class Sequencer:
                             print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
                             continue
 
-                    csvwriter.writerow([i[0],self.fdata['loop_nests'] , self.fdata['stmt_nest'], str(self.fdata['arith']), str(self.fdata['mem']), n, i[1], i[2], i[3], elapsed])
+                    csvwriter.writerow([self.fdata['loop_nests'] , self.fdata['stmt_nest'], str(self.fdata['arith']), str(self.fdata['mem']), n, i[0], i[1], i[2], elapsed])
 
                 n += 1
 
@@ -168,17 +166,18 @@ class Sequencer:
                 l = line
                 break
             if l is None:
-                csvwriter.writerow(['input', 'nests', 'stms', 'arithmetic', 'memory', 'peeled nest' ,'peeled loop', 'peeled stmt',
+                csvwriter.writerow(['nests', 'stms', 'arithmetic', 'memory', 'peeled nest' ,'peeled loop', 'peeled stmt',
                          'peel amount', 'cost'])  # headers
             for itr in itrs:
                 for i in itr:
                     self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=n,
-                                                  transformations=[['peel', i[2], i[1], i[3]]])
+                                                  transformations=[['peel', i[1], i[0], i[2]]])
 
-                    p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
+                    p = Popen('/home/tharindu/chill-ins-new/bin/chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
                     p.communicate()         #wait for the returncode
                     #verify p.returncode, if 0, success. Else invalid, cost = -INF
                     print p.returncode
+
                     if p.returncode != 0 :
                         print 'invalid'
                         elapsed = -1000.0
@@ -197,7 +196,7 @@ class Sequencer:
                             print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
                             continue
 
-                    csvwriter.writerow([i[0],self.fdata['loop_nests'] , self.fdata['stmt_nest'], str(self.fdata['arith']), str(self.fdata['mem']), n, i[1], i[2], i[3], elapsed])
+                    csvwriter.writerow([self.fdata['loop_nests'] , self.fdata['stmt_nest'], str(self.fdata['arith']), str(self.fdata['mem']), n, i[0], i[1], i[2], elapsed])
 
                 n += 1
 
