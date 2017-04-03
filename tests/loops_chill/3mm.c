@@ -4,6 +4,8 @@
 #define NL 100
 #define NM 100
 
+int main(){
+
 float E[NI][NJ];
 float A[NI][NK];
 float B[NK][NJ];
@@ -15,8 +17,6 @@ float G[NI][NL];
 
 int i1, j, k1, i2,j2, k2, i3,j3,k3;
 
-int main(){
-	/* E := A*B */
     for (i1 = 0; i1 < NI; i1++){
         for (j = 0; j < NJ; j++)
         {
@@ -26,7 +26,7 @@ int main(){
 	        }
         }
     }
-    /* F := C*D */
+
     for (i2 = 0; i2 < NJ; i2++){
         for (j2 = 0; j2 < NL; j2++)
         {
@@ -36,7 +36,8 @@ int main(){
 	        }
         }
     }
-    /* G := E*F */
+
+
     for (i3 = 0; i3 < NI; i3++){
         for (j3 = 0; j3 < NL; j3++)
         {
