@@ -102,9 +102,9 @@ class Sequencer:
                         start = time.clock()
                         p2 = Popen('./tmp.bin', stdout=PIPE, stderr=PIPE)
                         elapsed = time.clock()*1000 - start*1000        #in ms
-                        print p2.returncode
+                        p2.communicate()
                         if p2.returncode != 0:          #verify success before committing results
-                            print 'Iteration ' + str(i) + ' failed  with error code ' + str(p2) + '\n'
+                            print 'Iteration ' + str(i) + ' failed  with error code ' + str(p2.returncode) + '\n'
                             continue
 
                     #fp = open(self.xform + '_data.txt', 'a')
