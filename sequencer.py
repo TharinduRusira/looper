@@ -35,11 +35,11 @@ class Sequencer:
         self.cg = CHiLLCodeGen(dir)
 
     def generate_space(self):
-        input_range = [1, 2, 3]  # log(input size)
-
         loop_range=[]
         stms_range = []
         itrs = []
+
+        input_range = [3]           #[1, 2, 3]  # log(input size)
 
         if self.xform == 'tile':
             amount_range = [4,8,16,32,64]
@@ -48,8 +48,8 @@ class Sequencer:
         else:                                       #change later as necessary
             amount_range = [4, 8, 16, 32, 64]
 
-        for n in range(len(self.fdata['nests'])):
-            loop_range.append(range(1,self.fdata['nests'][n]+1 ))             # num loops in the n-th nest
+        for n in range(len(self.fdata['loop_nests'])):
+            loop_range.append(range(1,self.fdata['loop_nests'][n]+1 ))             # num loops in the n-th nest
             stms_range.append(range(0,self.fdata['stmt_nest'][n]))             # num stms in the n-th nest
 
             itrs.append(list(itertools.product(input_range,loop_range[n],stms_range[n], amount_range)))      #len(nests) number of iterators
@@ -60,12 +60,15 @@ class Sequencer:
 
         return itrs
 
-    def run(self, itr):
+    def run(self, itrs):
 
         csvout = open('data_'+self.xform+'_'+self.cfile['name'].split('.c')[0]+'.csv','a+')
         csvwriter = csv.writer(csvout, delimiter=',')
         csvreader = csv.reader(csvout)
+
         l = None
+        n = 0                       #current nest
+
         if self.xform == 'tile':
 
             for line in csvreader:
@@ -73,44 +76,47 @@ class Sequencer:
                 break
 
             if l is None:
-                csvwriter.writerow(['input', 'depth', 'stms', 'arithmetic', 'memory', 'tiled loop', 'tiled stmt', 'tile size',
+                csvwriter.writerow(['input', 'nests', 'stms', 'arithmetic', 'memory', 'tiled nest', 'tiled loop', 'tiled stmt', 'tile size',
                          'cost'])  # headers
+            for itr in itrs:
+                for i in itr:
+                    self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=n,
+                                                  transformations=[['tile', i[2], i[1], i[3]]])                             #generate CHiLL script
+                    subprocess.call(['cat', 'xform.script'])
+                    p = Popen('/home/tharindu/chill-ins-new/bin/chill xform.script'.split(), stdout=PIPE, stderr=PIPE)                                       #transform code
+                    p.communicate()         #wait for the returncode
+                    #verify p.returncode, if 0, success. Else invalid, cost = -INF
 
-            for i in itr:
-                self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=0,
-                                              transformations=[['tile', i[2], i[1], i[3]]])                             #generate CHiLL script
+                    if p.returncode != 0 :
+                        print 'invalid!'
+                        elapsed = -1000.0
+                    else:
+                        #compile run rose_*.c and get execution time
+                        p1 = Popen(('gcc rose_'+self.cfile['name']+' -o tmp.bin').split(), stdout=PIPE, stderr=PIPE)
+                        p1.communicate()
 
-                p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)                                       #transform code
-                p.communicate()         #wait for the returncode
-                #verify p.returncode, if 0, success. Else invalid, cost = -INF
+                        if  p1.returncode != 0:
+                            print 'compiling transformed code failed with error code '+ str(p1.returncode) + '\n'
+                            continue
 
-                if p.returncode != 0 :
-                    print 'invalid!'
-                    elapsed = -1000.0
-                else:
-                    #compile run rose_*.c and get execution time
-                    p1 = Popen(('gcc rose_'+self.cfile['name']+' -o tmp.bin').split(), stdout=PIPE, stderr=PIPE)
-                    p1.communicate()
-                    if  p1.returncode != 0:
-                        print 'compiling transformed code failed with error code '+ str(p1.returncode) + '\n'
-                        continue
+                        start = time.clock()
+                        p2 = Popen('./tmp.bin', stdout=PIPE, stderr=PIPE)
+                        elapsed = time.clock()*1000 - start*1000        #in ms
+                        print p2.returncode
+                        if p2.returncode != 0:          #verify success before committing results
+                            print 'Iteration ' + str(i) + ' failed  with error code ' + str(p2) + '\n'
+                            continue
 
-                    start = time.clock()
-                    p2 = subprocess.call('./tmp.bin')
-                    elapsed = time.clock()*1000 - start*1000        #in ms
-                    if p2 != 0:          #verify success before committing results
-                        print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
-                        continue
-                #fp = open(self.xform + '_data.txt', 'a')
-                #fp.write(str(i[0])+ ','+ str(i[1]) + ',' + str(i[2]) + ',' + str(i[3]) + ',' + str(self.fdata['arith']) + ',' + str(self.fdata['mem']) + ',' + str(cost)+'\n')
-                #fp.close()
-                csvwriter.writerow([i[0],self.fdata['depth'] , self.fdata['stms'], str(self.fdata['arith']), str(self.fdata['mem']), i[1], i[2], i[3], elapsed])
+                    #fp = open(self.xform + '_data.txt', 'a')
+                    #fp.write(str(i[0])+ ','+ str(i[1]) + ',' + str(i[2]) + ',' + str(i[3]) + ',' + str(self.fdata['arith']) + ',' + str(self.fdata['mem']) + ',' + str(cost)+'\n')
+                    #fp.close()
+                    csvwriter.writerow([i[0],self.fdata['loop_nests'] , self.fdata['stmt_nest'], str(self.fdata['arith']), str(self.fdata['mem']), n, i[1], i[2], i[3], elapsed])
 
-                #clean
-                #os.remove('xform.script')     #remove chill script
-                #os.remove('rose_'+self.cfile['name'])
-                #os.remove('tmp.bin')
-
+                n += 1          #go to next loop nest
+                    #clean
+                    #os.remove('xform.script')     #remove chill script
+                    #os.remove('rose_'+self.cfile['name'])
+                    #os.remove('tmp.bin')
             csvout.close()
 
         elif self.xform == 'unroll':
@@ -118,78 +124,84 @@ class Sequencer:
                 l = line
                 break
             if l is None:
-                csvwriter.writerow(['input', 'depth', 'stms', 'arithmetic', 'memory', 'unrolled loop', 'unrolled stmt',
+                csvwriter.writerow(['input', 'nests', 'stms', 'arithmetic', 'memory', 'unrolled nest', 'unrolled loop', 'unrolled stmt',
                          'unroll size', 'cost'])  # headers
+            for itr in itrs:
+                for i in itr:
+                    self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=n,
+                                                  transformations=[['unroll', i[2], i[1], i[3]]])
 
-            for i in itr:
-                self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=0,
-                                              transformations=[['unroll', i[2], i[1], i[3]]])
+                    p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
+                    p.communicate()         #wait for the returncode
+                    #verify p.returncode, if 0, success. Else invalid, cost = -INF
+                    print p.returncode
+                    if p.returncode != 0 :
+                        print 'invalid'
+                        elapsed = -1000.0
+                    else:
+                        #compile run rose_*.c and get execution time
+                        p1 = Popen(('gcc rose_'+self.cfile['name']+' -o tmp.bin').split(), stdout=PIPE, stderr=PIPE)
+                        p1.communicate()
+                        if  p1.returncode != 0:
+                            print 'compiling transformed code failed with error code '+ str(p1.returncode) + '\n'
+                            continue
 
-                p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
-                p.communicate()         #wait for the returncode
-                #verify p.returncode, if 0, success. Else invalid, cost = -INF
-                print p.returncode
-                if p.returncode != 0 :
-                    print 'invalid'
-                    elapsed = -1000.0
-                else:
-                    #compile run rose_*.c and get execution time
-                    p1 = Popen(('gcc rose_'+self.cfile['name']+' -o tmp.bin').split(), stdout=PIPE, stderr=PIPE)
-                    p1.communicate()
-                    if  p1.returncode != 0:
-                        print 'compiling transformed code failed with error code '+ str(p1.returncode) + '\n'
-                        continue
+                        start = time.clock()
+                        p2 = subprocess.call('./tmp.bin')
+                        elapsed = time.clock()*1000 - start*1000        #in ms
+                        if p2 != 0:          #verify success before committing results
+                            print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
+                            continue
 
-                    start = time.clock()
-                    p2 = subprocess.call('./tmp.bin')
-                    elapsed = time.clock()*1000 - start*1000        #in ms
-                    if p2 != 0:          #verify success before committing results
-                        print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
-                        continue
+                    csvwriter.writerow([i[0],self.fdata['loop_nests'] , self.fdata['stmt_nest'], str(self.fdata['arith']), str(self.fdata['mem']), n, i[1], i[2], i[3], elapsed])
 
-                csvwriter.writerow([i[0],self.fdata['depth'] , self.fdata['stms'], str(self.fdata['arith']), str(self.fdata['mem']), i[1], i[2], i[3], elapsed])
+                n += 1
 
                     #clean
                     #os.remove() #chill script
                     #os.remove('rose_'+self.cfile['name'])
                     #os.remove('tmp.bin')
+            csvout.close()
 
         elif self.xform == 'peel':
             for line in csvreader:
                 l = line
                 break
             if l is None:
-                csvwriter.writerow(['input', 'depth', 'stms', 'arithmetic', 'memory', 'peeled loop', 'peeled stmt',
+                csvwriter.writerow(['input', 'nests', 'stms', 'arithmetic', 'memory', 'peeled nest' ,'peeled loop', 'peeled stmt',
                          'peel amount', 'cost'])  # headers
+            for itr in itrs:
+                for i in itr:
+                    self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=n,
+                                                  transformations=[['peel', i[2], i[1], i[3]]])
 
-            for i in itr:
-                self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=0,
-                                              transformations=[['peel', i[2], i[1], i[3]]])
+                    p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
+                    p.communicate()         #wait for the returncode
+                    #verify p.returncode, if 0, success. Else invalid, cost = -INF
+                    print p.returncode
+                    if p.returncode != 0 :
+                        print 'invalid'
+                        elapsed = -1000.0
+                    else:
+                        #compile run rose_*.c and get execution time
+                        p1 = Popen(('gcc rose_'+self.cfile['name']+' -o tmp.bin').split(), stdout=PIPE, stderr=PIPE)
+                        p1.communicate()
+                        if  p1.returncode != 0:
+                            print 'compiling transformed code failed with error code '+ str(p1.returncode) + '\n'
+                            continue
 
-                p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
-                p.communicate()         #wait for the returncode
-                #verify p.returncode, if 0, success. Else invalid, cost = -INF
-                print p.returncode
-                if p.returncode != 0 :
-                    print 'invalid'
-                    elapsed = -1000.0
-                else:
-                    #compile run rose_*.c and get execution time
-                    p1 = Popen(('gcc rose_'+self.cfile['name']+' -o tmp.bin').split(), stdout=PIPE, stderr=PIPE)
-                    p1.communicate()
-                    if  p1.returncode != 0:
-                        print 'compiling transformed code failed with error code '+ str(p1.returncode) + '\n'
-                        continue
+                        start = time.clock()
+                        p2 = subprocess.call('./tmp.bin')
+                        elapsed = time.clock()*1000 - start*1000        #in ms
+                        if p2 != 0:          #verify success before committing results
+                            print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
+                            continue
 
-                    start = time.clock()
-                    p2 = subprocess.call('./tmp.bin')
-                    elapsed = time.clock()*1000 - start*1000        #in ms
-                    if p2 != 0:          #verify success before committing results
-                        print 'Iteration ' + str(i) + 'failed  with error code' + str(p2) + '\n'
-                        continue
+                    csvwriter.writerow([i[0],self.fdata['loop_nests'] , self.fdata['stmt_nest'], str(self.fdata['arith']), str(self.fdata['mem']), n, i[1], i[2], i[3], elapsed])
 
-                csvwriter.writerow([i[0],self.fdata['depth'] , self.fdata['stms'], str(self.fdata['arith']), str(self.fdata['mem']), i[1], i[2], i[3], elapsed])
+                n += 1
 
+            csvout.close()
 
         elif self.xform == 'scale':
             pass
