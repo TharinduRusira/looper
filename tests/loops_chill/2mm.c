@@ -3,7 +3,7 @@
 #define K 100
 #define L 100
 
-void main(){
+int main(){
 
 float alpha = 1.5;
 float beta = 1.2;
@@ -35,4 +35,5 @@ int i1, j, k1, i2,j2, k2;
 	        }
         }
     }
+return 0;
 }

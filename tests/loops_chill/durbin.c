@@ -1,7 +1,7 @@
 #define N 100
 
 
-void main(){
+int main(){
 
 float r[N];
 float y[N];
@@ -34,5 +34,5 @@ int i1,k1, i2, i3;
         y[k1] = alpha;
     }
 
-
+return 0;
 }

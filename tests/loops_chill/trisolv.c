@@ -1,7 +1,7 @@
 #define N 100
 
 
-void main(){
+int main(){
 
 float L[N][N];
 float x[N];
@@ -17,4 +17,5 @@ int i1,j;
         }
         x[i1] = x[i1] / L[i1][i1];
     }
+    return 0;
 }

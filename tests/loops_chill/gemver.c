@@ -1,7 +1,7 @@
 #define N 100
 
 
-void main(){
+int main(){
 
 float alpha = 5.0;
 float beta = 10.0;
@@ -37,5 +37,6 @@ int i1,j, i2,j2, i3,j3, i4,j4;
             w[i4] = w[i4] +  alpha * A[i4][j4] * x[j4];
         }
     }
+    return 0;
 }
 

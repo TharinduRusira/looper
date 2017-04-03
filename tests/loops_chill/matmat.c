@@ -1,6 +1,6 @@
 #define N 100
 
-void main()
+int main()
 {
 int i,j,k;
 int A[N][N], B[N][N], C[N][N];
@@ -17,5 +17,5 @@ for (i=0;i<N;i++)
 
     }
 }
-
+return 0;
 }

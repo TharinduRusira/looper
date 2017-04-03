@@ -3,7 +3,7 @@
 #define np 100
 
 
-void main(){
+int main(){
 
 float A[nr][nq][np];
 float C4[np][np];
@@ -24,5 +24,5 @@ int r1, q1, p1,s1, p2;
 	        }
         }
     }
-
+return 0;
 }

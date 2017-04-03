@@ -2,7 +2,7 @@
 #define TSTEPS 100
 
 
-void main(){
+int main(){
 
 float A[N];
 float B[N];
@@ -18,5 +18,5 @@ int t, i1,i2;
 	        A[i2] = 0.33333 * (B[i2-1] + B[i2] + B[i2 + 1]);
 	    }
     }
-
+return 0;
 }

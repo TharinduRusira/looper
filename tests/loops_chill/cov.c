@@ -2,7 +2,7 @@
 #define N 100
 
 
-void main(){
+int main(){
 
 float data[N][M];
 float cov[M][M];
@@ -35,4 +35,5 @@ int i1,j,k1, i2,j2,k2, i3,j3,k3 ;
             cov[j3][i3] = cov[i3][j3];
           }
      }
+return 0;
 }

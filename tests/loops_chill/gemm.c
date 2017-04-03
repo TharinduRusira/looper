@@ -3,7 +3,7 @@
 #define K 100
 
 
-void main(){
+int main(){
 float alpha = 5.0;
 float beta = 10.0;
 
@@ -22,4 +22,5 @@ int i1,j,k1;
             }
         }
     }
+    return 0;
 }

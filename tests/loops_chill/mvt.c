@@ -1,7 +1,7 @@
 #define N 100
 
 
-void main(){
+int main(){
 
 float x1[N];
 float x2[N];
@@ -21,4 +21,5 @@ int i1,j,i2,j2;
             x2[i2] = x2[i2] + A[j2][i2] * y_2[j2];
         }
     }
+    return 0;
 }

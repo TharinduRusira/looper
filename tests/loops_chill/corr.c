@@ -1,8 +1,7 @@
 #define N 100
 #define M 100
 
-
-void main(){
+int main(){
 
 float data[N][M];
 float corr[M][M];
@@ -42,5 +41,5 @@ int i1,j,k1, i2,j2,k2, i3,j3,k3;
     }
 
     corr[M-1][M-1] = 1.0;
-
+return 0;
 }

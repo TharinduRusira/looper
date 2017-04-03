@@ -2,7 +2,7 @@
 #define N 100
 
 
-void main(){
+int main(){
 
 float alpha = 1.5;
 float beta = 1.2;
@@ -26,5 +26,5 @@ int i1,j,k1;
         }
     }
 
-
+return 0;
 }

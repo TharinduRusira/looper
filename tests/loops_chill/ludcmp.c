@@ -1,7 +1,7 @@
 #define N 100
 
 
-void main(){
+int main(){
 
 float A[N][N];
 float b[N];
@@ -43,4 +43,6 @@ int i1,j,k1, j2,k2, i2, j3, i3, j4;
             w = w - A[i3][j4] * x[j4];
         x[i3] = w / A[i3][i3];
     }
+
+    return 0;
 }

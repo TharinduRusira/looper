@@ -2,7 +2,7 @@
 #define W 100
 
 
-void main(){
+int main(){
 
 float alpha = 0.25;
 
@@ -94,4 +94,5 @@ int i1,j, i2,j2, i3,j3, i4,j4, i5,j5, i6,j6;
             imgOut[i6][j6] = c2*(y1[i6][j6] + y2[i6][j6]);
         }
     }
+    return 0;
 }

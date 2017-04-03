@@ -2,7 +2,7 @@
 #define M 100
 
 
-void main(){
+int main(){
 
 float alpha = 1.5;
 float beta = 1.2;
@@ -24,5 +24,5 @@ int i1, j11, k1, j12;
             }
         }
   }
-
+return 0;
 }

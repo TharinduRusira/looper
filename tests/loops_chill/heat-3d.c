@@ -2,7 +2,7 @@
 #define TSTEPS 100
 
 
-void main(){
+int main(){
 
 float A[N][N][N];
 float B[N][N][N];
@@ -31,4 +31,5 @@ int t, i1,j,k1, i2,j2, k2;
             }
         }
      }
+     return 0;
 }

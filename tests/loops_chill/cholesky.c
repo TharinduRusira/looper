@@ -1,7 +1,6 @@
 #define N 100
 
-
-void main(){
+int main(){
 
 float A[N][N];
 
@@ -22,5 +21,5 @@ int i1, j, k1, k2;
 
         //A[i1][i1] = sqrt(A[i1][i1]);
   }
-
+return 0;
 }

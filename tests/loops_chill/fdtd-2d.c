@@ -3,7 +3,7 @@
 #define NY 100
 
 
-void main(){
+int main(){
 
 float ex[NX][NY];
 float ey[NX][NY];
@@ -34,5 +34,5 @@ int t, i1, j, i2,j2, i3, j3, j4;
 	        }
 	     }
     }
-
+return 0;
 }

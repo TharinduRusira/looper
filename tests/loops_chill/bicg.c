@@ -1,10 +1,7 @@
 #define N 100
 #define M 100
 
-
-
-
-void main(){
+int main(){
 
 float A[N][M];
 float s[M];
@@ -26,5 +23,5 @@ int i1, j, i2;
 	        q[i2] = q[i2] + A[i2][j] * p[j];
 	    }
     }
-
+return 0;
 }

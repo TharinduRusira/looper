@@ -4,7 +4,7 @@
 
 
 
-void main(){
+int main(){
 
 float A[N][N][N];
 int t, i,j;
@@ -16,4 +16,5 @@ for(t=1;t<T-1;t++){
         }
     }
 }
+return 0;
 }

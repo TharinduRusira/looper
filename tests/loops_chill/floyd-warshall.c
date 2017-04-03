@@ -1,7 +1,7 @@
 #define N 100
 
 
-void main(){
+int main(){
 
 float path[N][N];
 
@@ -15,4 +15,5 @@ int i1, j, k1;
 	        }
 	    }
     }
+    return 0;
 }

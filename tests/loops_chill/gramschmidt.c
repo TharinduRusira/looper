@@ -2,7 +2,7 @@
 #define M 100
 
 
-void main(){
+int main(){
 
 float A[M][N];
 float R[N][N];
@@ -34,5 +34,5 @@ int i1, j, k1, i2, i3, i4;
 	        }
 	    }
     }
-
+return 0;
 }

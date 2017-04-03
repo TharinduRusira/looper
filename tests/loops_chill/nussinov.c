@@ -4,7 +4,7 @@
 #define max_score(s1, s2) ((s1 >= s2) ? s1 : s2)
 
 
-void main(){
+int main(){
 
 float seq[N];
 float table[N][N];
@@ -31,4 +31,6 @@ int i1, j, k1;
             }
         }
     }
+
+    return 0;
 }
