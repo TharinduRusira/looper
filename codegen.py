@@ -101,7 +101,7 @@ class CHiLLCodeGen(object):
 					line += str(t[2])
 					# t[3] = amount OPTIONAL
 					if (len(t) == 4):
-						line += keyword['DELIM'] + t[3]
+						line += keyword['DELIM'] + str(t[3])
 					line += keyword['PARAN_R']
 					fp.write(line + '\n')
 
