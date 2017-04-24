@@ -80,7 +80,7 @@ class Sequencer:
                 for i in itr:
                     self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=n,
                                                   transformations=[['tile', i[1], i[0], i[2]]])                             #generate CHiLL script
-                    p = Popen('/home/tharindu/chill-ins-new/bin/chill xform.script'.split(), stdout=PIPE, stderr=PIPE)                                       #transform code
+                    p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)                                       #transform code
                     p.communicate()         #wait for the returncode
                     #verify p.returncode, if 0, success. Else invalid, cost = -INF
 
@@ -129,7 +129,7 @@ class Sequencer:
                     self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=n,
                                                   transformations=[['unroll', i[1], i[0], i[2]]])
 
-                    p = Popen('/home/tharindu/chill-ins-new/bin/chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
+                    p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
                     p.communicate()         #wait for the returncode
                     #verify p.returncode, if 0, success. Else invalid, cost = -INF
                     print p.returncode
@@ -173,7 +173,7 @@ class Sequencer:
                     self.cg.generate_chill_script(self.cfile['path'], self.cfile['procedure'], looplevel1=n,
                                                   transformations=[['peel', i[1], i[0], i[2]]])
 
-                    p = Popen('/home/tharindu/chill-ins-new/bin/chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
+                    p = Popen('chill xform.script'.split(), stdout=PIPE, stderr=PIPE)
                     p.communicate()         #wait for the returncode
                     #verify p.returncode, if 0, success. Else invalid, cost = -INF
                     print p.returncode
