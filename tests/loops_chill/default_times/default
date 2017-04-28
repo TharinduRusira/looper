@@ -1,5 +1,7 @@
 2mm.c   0.334
 3mm.c   0.322
+adi.c   0.301
+atax.c  0.315
 bicg.c  0.338
 cholesky.c  0.375
 corr.c  0.328
