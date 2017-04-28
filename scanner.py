@@ -83,12 +83,19 @@ class Scanner:
                 elif '[' not in line and ',' not in line:
                     first = re.split(r'float|;', line)[1]
                     vars.append(first.strip())
+
                 else:
                     #a line that declares float data. Assume format float A[N][N]
                     #assume one declaration for a line
                     first = (re.split(r'\[', line))[0]
                     #now remove the data type 'float'
                     vars.append(first.split()[1])
+
+            if line.strip().startswith('int') and 'main' not in line:
+                #int a;
+                #int a = 1;
+                if '=' not in line:
+                    vars.append(line.split()[1][:-1])
 
 
             if 'for' in line:
@@ -111,17 +118,24 @@ class Scanner:
                 gotStart = False
                 gotEnd = False
 
-                l = re.split(r'\(|\)', line.strip())        #ideally this should break the line into 3 parts, l[1] has the loop control data
-                l1 = l[1].split(';')                        #again, 3 pieces
+                #l = re.split(r'\(|\)', line.strip())        #ideally this should break the line into 3 parts, l[1] has the loop control data
+                l= re.split('{', line.split('for')[1].strip())[0].strip()[1:-1]
+                #print l
+                l1 = l.split(';')                        #again, 3 pieces
+                #print l1
+
                 idx = l1[0].split('=')[0]
                 if idx not in loop_ids:
                     loop_ids.append(idx.strip())
                 start = l1[0].split('=')[1]
 
+
                 if start.strip() in symbols:              #if terminate condition is a defined variable
                     start = symbols[start.strip()]
                 elif start.strip() in loop_ids:
                     start = math.log(max(symbols.iteritems(), key=operator.itemgetter(1))[1]) #a heuristic approximation of the log2 of the largest symbol
+                elif '?' in start:  #tertnary operator
+                    start = '0'
                 else:
                     #start bound is most likely an expression including either a symbol or another loop bound
                     for symbol in symbols:              #more complicated end conditions such as N-1, ...
@@ -134,7 +148,8 @@ class Scanner:
                             if var in re.split(r'\+|-|\*', start.strip()):
                                 start = math.log(max(symbols.iteritems(), key=operator.itemgetter(1))[1]) #a heuristic approximation of the log2 of the largest symbol
                                 break
-
+                #print vars
+                #print l1
                 l2 = re.split(r'<=|>=|<|>|',l1[1])
                 end = l2[1]
 
@@ -146,7 +161,7 @@ class Scanner:
                     for symbol in symbols:
                         if symbol in re.split(r'\+|-|\*', end.strip()):
                             end = symbols[symbol]
-                            print end
+                            #print end
                             gotEnd = True
                             break
                     if not gotEnd:
@@ -164,8 +179,27 @@ class Scanner:
                     #i = i + x
                     rhs = (step.split('=')[1]).strip()
                     step_size = int(re.split(r'\+|-|\*|/',rhs)[-1])
-                #print start, end, step_size
-                x = math.fabs(math.ceil((float(end) - float(start))/step_size))
+
+                try:
+                    end = float(end)
+                except ValueError:
+                    for var in loop_ids:
+                        if var in re.split(r'\+| - |\*', end.strip()):
+                            end = math.log(max(symbols.iteritems(), key=operator.itemgetter(1))[1])  # a heuristic approximation of the log2 of the largest symbol
+                            break
+
+                try:
+                    start = float(start)
+                except ValueError:
+                    for var in loop_ids:
+                        if var in re.split(r'\+|-|\*', start.strip()):
+                            start = math.log(max(symbols.iteritems(), key=operator.itemgetter(1))[1])  # a heuristic approximation of the log2 of the largest symbol
+                            break
+
+                print start, end, step_size
+                it = math.ceil((end - start)/step_size)
+
+                x = math.fabs(it)
                 if x == 0.0:
                     x = 1 # 0 messes up the multiplication later on
                 num_itrs.append(x)
@@ -230,7 +264,7 @@ class Scanner:
         #DEBUG PRINTS
         #print symbols
         #print limits
-        #print 'Nests=', nests, 'depth=', d, 'nests=', nest
+        print 'Nests=', nests, 'depth=', d, 'nests=', nest
         #print num_itrs_per_nest
         #print 'iterations='+ str(tot_itrs)
         #print stmt_nest
